@@ -18,15 +18,13 @@ const navLinks = [
 ];
 
 const words = [
-  { text: "Ideas", imgPath: "/images/ideas.svg" },
-  { text: "Concepts", imgPath: "/images/concepts.svg" },
-  { text: "Designs", imgPath: "/images/designs.svg" },
-  { text: "Code", imgPath: "/images/code.svg" },
-  { text: "Ideas", imgPath: "/images/ideas.svg" },
-  { text: "Concepts", imgPath: "/images/concepts.svg" },
-  { text: "Designs", imgPath: "/images/designs.svg" },
-  { text: "Code", imgPath: "/images/code.svg" },
-];
+    { text1: "From", text2: "Ideas", imgPath: "/images/ideas.svg" },
+    { text1: "To", text2: "Code", imgPath: "/images/concepts.svg" },
+    { text1: "To", text2: "Reality", imgPath: "/images/concepts.svg" },
+    { text1: "From", text2: "Ideas", imgPath: "/images/ideas.svg" },
+    { text1: "To", text2: "Code", imgPath: "/images/concepts.svg" },
+    { text1: "To", text2: "Reality", imgPath: "/images/concepts.svg" },
+]
 
 const counterItems = [
   { value: 15, suffix: "+", label: "Years of Experience" },

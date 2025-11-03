@@ -90,7 +90,7 @@ section {
       @apply size-8 md:size-10 object-contain;
     }
     .slide {
-      @apply absolute pt-0 px-2 md:px-5 py-[30px] h-[48px] md:h-[78px] md:translate-y-1 translate-y-0 overflow-hidden;
+      @apply absolute pt-0 px-0 md:px-0 py-[30px] h-[48px] md:h-[100px] md:translate-y-1 translate-y-0 overflow-hidden;
     }
   }
 
@@ -332,7 +332,7 @@ section {
 .wrapper {
   display: flex;
   flex-direction: column;
-  animation: wordSlider 21s infinite cubic-bezier(0.9, 0.01, 0.3, 0.99);
+  animation: wordSlider 16s infinite cubic-bezier(0.9, 0.01, 0.3, 0.99);
 }
 
 @keyframes wordSlider {
@@ -340,26 +340,30 @@ section {
     transform: translateY(0.5%);
   }
   12.5% {
-    transform: translateY(-12.5%);
+    transform: translateY(-15%);
   }
   25% {
-    transform: translateY(-25%);
+    transform: translateY(-32%);
   }
   37.5% {
-    transform: translateY(-37.5%);
+    transform: translateY(-48%);
   }
   50% {
-    transform: translateY(-50%);
+    transform: translateY(-64%);
   }
   62.5% {
-    transform: translateY(-62.5%);
-  }
-  75% {
-    transform: translateY(-75%);
-  }
-  87.5% {
-    transform: translateY(-87.5%);
-  }
+    transform: translateY(-81%);
+  
+}
+76% {
+    transform: translateY(-81%);
+  
+}
+
+100% {
+  transform: translateY(0.5%);
+}
+  
 }
 
 /* Hero Text slider ends */
