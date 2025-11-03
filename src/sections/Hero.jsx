@@ -85,7 +85,7 @@ const Hero = () => {
               Hey, I'm Shamishka,
             </p>
 
-            {/* Role descriptions */}
+            {/* my descriptions */}
             <div
               className="text-white-50 md:text-xl relative z-10 pointer-events-none ml-16 xl:top-[-120px]"
               ref={descRef}
