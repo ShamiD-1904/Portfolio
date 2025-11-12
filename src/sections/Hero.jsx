@@ -32,15 +32,17 @@ const Hero = () => {
 
   return (
     <section className="relative overflow-hidden" id="hero">
-      <div className="absolute top-0 left-0 z-10">
+      <div className="absolute top-10 left-10 z-10">
         <img src="/images/bg.png" alt="background" />
       </div>
 
       <div className="hero-layout">
+
         {/* LEFT: HERO TEXT CONTENT */}
         <header className="flex flex-col justify-center md:w-full w-screen md:px-16 px-5">
-          <div className="flex flex-col gap-4 text-2xl">
+          <div className="flex flex-col gap-4 md:text-2xl">
             <div className="hero-text ">
+
               {/* Sliding words animation: "From Ideas To Code To Reality" */}
               <h1>
                 <span className="slide" ref={slideRef}>
@@ -55,7 +57,7 @@ const Hero = () => {
                         <img
                           src={word.imgPath}
                           alt={word.text2}
-                          className="xl:size-12 md:size-10 size-7 md:p-2 p-1 rounded-full bg-white-50"
+                          className="xl:size-12 sm:size-10 size-6 md:p-2 p-1 rounded-full bg-white-50"
                         />
                         <span>{word.text2}</span>
                       </span>
@@ -65,12 +67,15 @@ const Hero = () => {
               </h1>
               <br />
               <h1></h1>
+
               {/* Static headline */}
               <h1 className="" ref={headline1Ref}>
-                Engineering Solutions, <br />
+                Engineering Solutions, {<br />}
                 Delivering Results.
               </h1>
-              {/* Dynamic glitching word - cycles through Build → Innovate → Deliver */}
+
+
+              {/* Dynamic glitching word */}
               <h1 className="md:mt-2.5" ref={headline2Ref}>
                 <span className="glitch-word">{currentWord}</span>
                 
@@ -79,36 +84,40 @@ const Hero = () => {
 
             {/* Introduction text */}
             <p
-              className="text-white-50 md:text-xl relative z-10 xl:top-[-120px] pointer-events-none"
+              className="text-white-50 md:text-xl relative z-10 xl:top-[-120px] pointer-events-none xl:text-3xl"
               ref={introRef}
             >
-              Hey, I'm Shamishka,
+              Hey, I'm <i>Shamishka</i>,
             </p>
 
             {/* my descriptions */}
             <div
-              className="text-white-50 md:text-xl relative z-10 pointer-events-none ml-16 xl:top-[-120px]"
+              className="text-white-50 md:text-xl xl:text-2xl relative z-10 pointer-events-none ml-16 xl:top-[-120px]"
               ref={descRef}
             >
               <p>
-                A Computer Engineering undergraduate <br />
-                Fullstack Web Developer <br />
-                AI/ML Enthusiast
+                A Computer Engineering undergraduate, <br />
+                Fullstack Web Developer, <br />
+                AI/ML and Robotics Enthusiast, <br /> <b>And a constant learner .. </b>
               </p>
             </div>
 
             {/* Call-to-action button */}
+            <div className="cta-wrapper">
             <Button
-              className=" xl:top-[-120px] md:w-80 w-60 h-12"
+              className="cta-button"
               id="button"
               text="See my Work"
             />
+            </div>
           </div>
         </header>
 
+
+
         {/* RIGHT: 3D MODEL */}
         <figure>
-          <div className="hero-3d-layout ">
+          <div className="hero-3d-layout hidden">
             <HeroExperience />
           </div>
         </figure>

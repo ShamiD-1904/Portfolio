@@ -11,14 +11,14 @@ const HeroExperience = () => {
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
 
   return (
-    <Canvas camera={{ position: [-4, 4, 5], fov: 36 }}>
+    <Canvas className="border-2 border-red-500" camera={{ position: [-4, 4, 5], fov: 45 }}>
       
 
       <OrbitControls
         enablePan={false}
        
         enableRotate={true}
-        enableZoom={!isTablet && !isMobile}
+        enableZoom={false}
         maxDistance={20}
         minDistance={5}
         minPolarAngle={Math.PI / 5}
