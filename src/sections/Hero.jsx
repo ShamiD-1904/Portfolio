@@ -32,7 +32,8 @@ const Hero = () => {
 
   return (
     <section className="relative overflow-hidden" id="hero">
-      <div className="absolute top-10 left-10 z-10">
+      
+      <div className="absolute top-10  left-10 z-10">
         <img src="/images/bg.png" alt="background" />
       </div>
 
@@ -57,7 +58,7 @@ const Hero = () => {
                         <img
                           src={word.imgPath}
                           alt={word.text2}
-                          className="xl:size-12 sm:size-10 size-6 md:p-2 p-1 rounded-full bg-white-50"
+                          className="xl:size-10 sm:size-10 size-6 md:p-2 p-1 rounded-full bg-white-50"
                         />
                         <span>{word.text2}</span>
                       </span>
@@ -75,27 +76,29 @@ const Hero = () => {
               </h1>
 
 
+
               {/* Dynamic glitching word */}
-              <h1 className="md:mt-2.5" ref={headline2Ref}>
+              <h1 className="md:mt-2.5 font-semibold" ref={headline2Ref}>
                 <span className="glitch-word">{currentWord}</span>
                 
               </h1>
             </div>
+            <hr class="border-t border-[#00C2A8]/40 my-0 relative xl:top-[-100px] w-[70vh]" />
 
             {/* Introduction text */}
             <p
-              className="text-white-50 md:text-xl relative z-10 xl:top-[-120px] pointer-events-none xl:text-3xl"
+              className="text-white-50 md:text-xl relative z-10 xl:top-[-100px] pointer-events-none xl:text-5xl "
               ref={introRef}
             >
-              Hey, I'm <i>Shamishka</i>,
+              Hey, I'm <b className="bg-linear-to-b from-[#1b0adb] via-[#0a1f94] to-[#0d1350] bg-clip-text text-transparent font-bold text-shadow-blue-50">Shamishka,</b>
             </p>
 
             {/* my descriptions */}
             <div
-              className="text-white-50 md:text-xl xl:text-2xl relative z-10 pointer-events-none ml-16 xl:top-[-120px]"
+              className="text-white-50 md:text-xl xl:text-3xl relative z-10 pointer-events-none ml-16 xl:top-[-100px]"
               ref={descRef}
             >
-              <p>
+              <p className="xl:text-2xl">
                 A Computer Engineering undergraduate, <br />
                 Fullstack Web Developer, <br />
                 AI/ML and Robotics Enthusiast, <br /> <b>And a constant learner .. </b>
