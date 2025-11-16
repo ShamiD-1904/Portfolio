@@ -4,6 +4,7 @@ import Button from "../components/Button";
 import HeroExperience from "../components/HeroModels/HeroExperience";
 import useHeroAnimations from "../animations/useHeroAnimations";
 import useGlitchEffect from "../animations/useGlitchEffect";
+import AnimatedCounter from "../components/AnimatedCounter";
 
 const Hero = () => {
   const slideRef = useRef(); // Container for the sliding word animation
@@ -83,7 +84,7 @@ const Hero = () => {
                 
               </h1>
             </div>
-            <hr class="border-t border-[#00C2A8]/40 my-0 relative xl:top-[-100px] w-[70vh]" />
+            <hr className="border-t border-[#00C2A8]/40 my-0 relative xl:top-[-100px] w-[70vh]" />
 
             {/* Introduction text */}
             <p
@@ -120,11 +121,13 @@ const Hero = () => {
 
         {/* RIGHT: 3D MODEL */}
         <figure>
-          <div className="hero-3d-layout hidden">
+          <div className="hero-3d-layout">
             <HeroExperience />
           </div>
         </figure>
       </div>
+
+      <AnimatedCounter />
     </section>
   );
 };
