@@ -1,6 +1,4 @@
 import React, { useRef } from "react";
-import ImageListTile from "@mui/material/ImageListTile";
-import ListSubheader from "@mui/material/ListSubheader";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
