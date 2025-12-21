@@ -32,20 +32,18 @@ const Hero = () => {
   });
 
   return (
-    <section className="relative overflow-hidden" id="hero">
-      
-      <div className="absolute top-10  left-10 z-10">
+    <section className="hero-section" id="hero">
+      {/* Background decoration */}
+      <div className="hero-bg-decoration">
         <img src="/images/bg.png" alt="background" />
       </div>
 
-      <div className="hero-layout">
-
+      <div className="hero-container">
         {/* LEFT: HERO TEXT CONTENT */}
-        <header className="flex flex-col justify-center md:w-full w-screen md:px-16 px-5">
-          <div className="flex flex-col gap-4 md:text-2xl">
-            <div className="hero-text ">
-
-              {/* Sliding words animation: "From Ideas To Code To Reality" */}
+        <div className="hero-left">
+          <div className="hero-content">
+            {/* Sliding words animation */}
+            <div className="hero-text">
               <h1>
                 <span className="slide" ref={slideRef}>
                   <span className="wrapper">
@@ -53,13 +51,13 @@ const Hero = () => {
                       <span
                         key={`${word.text2}-${index}`}
                         ref={(el) => (slideItemsRef.current[index] = el)}
-                        className="flex items-center md:gap-2 gap-1  pb-2"
+                        className="slide-word"
                       >
                         <span>{word.text1} </span>
                         <img
                           src={word.imgPath}
                           alt={word.text2}
-                          className="xl:size-10 sm:size-10 size-6 md:p-2 p-1 rounded-full bg-white-50"
+                          className="slide-icon"
                         />
                         <span>{word.text2}</span>
                       </span>
@@ -71,60 +69,51 @@ const Hero = () => {
               <h1></h1>
 
               {/* Static headline */}
-              <h1 className="" ref={headline1Ref}>
+              <h1 className="hero-headline" ref={headline1Ref}>
                 Engineering Solutions, {<br />}
                 Delivering Results.
               </h1>
 
-
-
               {/* Dynamic glitching word */}
-              <h1 className="md:mt-2.5 font-semibold" ref={headline2Ref}>
+              <h1 className="hero-glitch" ref={headline2Ref}>
                 <span className="glitch-word">{currentWord}</span>
-                
               </h1>
             </div>
-            <hr className="border-t border-[#00C2A8]/40 my-0 relative xl:top-[-100px] w-[70vh]" />
+
+            <div className="hero-divider" />
 
             {/* Introduction text */}
-            <p
-              className="text-white-50 md:text-xl relative z-10 xl:top-[-100px] pointer-events-none xl:text-5xl "
-              ref={introRef}
-            >
-              Hey, I'm <b className="bg-linear-to-b from-[#1b0adb] via-[#0a1f94] to-[#0d1350] bg-clip-text text-transparent font-bold text-shadow-blue-50">Shamishka,</b>
-            </p>
-
-            {/* my descriptions */}
-            <div
-              className="text-white-50 md:text-xl xl:text-3xl relative z-10 pointer-events-none ml-16 xl:top-[-100px]"
-              ref={descRef}
-            >
-              <p className="xl:text-2xl">
-                A Computer Engineering undergraduate, <br />
-                Fullstack Web Developer, <br />
-                AI/ML and Robotics Enthusiast, <br /> <b>And a constant learner .. </b>
-              </p>
+            <div className="hero-intro" ref={introRef}>
+              <span className="intro-greeting">Hey, I'm</span>
+              <span className="intro-name">Shamishka</span>
             </div>
 
-            {/* Call-to-action button */}
-            <div className="cta-wrapper">
-            <Button
-              className="cta-button"
-              id="button"
-              text="See my Work"
-            />
+            {/* Description */}
+            <div className="hero-description" ref={descRef}>
+              <div className="description-text">
+                <span className="description-line">A Computer Engineering undergraduate,</span>
+                <span className="description-line">Fullstack Web Developer,</span>
+                <span className="description-line">AI/ML and Robotics Enthusiast,</span>
+              </div>
+            </div>
+
+            {/* CTA Button */}
+            <div className="hero-cta">
+              <Button
+                className="cta-button"
+                id="button"
+                text="See my Work"
+              />
             </div>
           </div>
-        </header>
-
-
+        </div>
 
         {/* RIGHT: 3D MODEL */}
-        <figure>
-          <div className="hero-3d-layout">
+        <div className="hero-right">
+          <div className="hero-3d-wrapper">
             <HeroExperience />
           </div>
-        </figure>
+        </div>
       </div>
 
       <AnimatedCounter />

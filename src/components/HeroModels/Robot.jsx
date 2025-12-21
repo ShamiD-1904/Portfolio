@@ -6,15 +6,158 @@ Source: https://sketchfab.com/3d-models/robot-0eff23412e48470bae690d87bd1726f8
 Title: Robot
 */
 
-import React, { useRef } from 'react'
+import React, { useRef, useEffect, useCallback } from 'react'
 import { useGLTF, useAnimations } from '@react-three/drei'
+import { useFrame } from '@react-three/fiber'
+import * as THREE from 'three'
 
 export function Robot(props) {
   const group = useRef()
+  const headRef = useRef()
   const { nodes, materials, animations } = useGLTF('models/robot2.glb')
   const { actions, names } = useAnimations(animations, group)
   
+  // State refs for click handler (avoids stale closures)
+  const isIdleRef = useRef(false)
+  const isAttackingRef = useRef(false)
+  const idleActionRef = useRef(null)
+  const attackActionRef = useRef(null)
+  const mousePosition = useRef({ x: 0, y: 0 })
 
+  // Animation finder helper
+  const findAnimation = useCallback((searchTerms) => {
+    if (!names) return null
+    return names.find(name => 
+      searchTerms.some(term => name.toLowerCase().includes(term.toLowerCase()))
+    )
+  }, [names])
+
+  // Mouse position tracking
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      mousePosition.current = {
+        x: (e.clientX / window.innerWidth) * 2 - 1,
+        y: -(e.clientY / window.innerHeight) * 2 + 1
+      }
+    }
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
+
+  // Find head bone for cursor tracking
+  useEffect(() => {
+    if (nodes.GLTF_created_0_rootJoint) {
+      nodes.GLTF_created_0_rootJoint.traverse((child) => {
+        if (child.name.toLowerCase().includes('head')) {
+          headRef.current = child
+        }
+      })
+    }
+  }, [nodes])
+
+  // Head follows cursor (only when idle)
+  useFrame(() => {
+    if (headRef.current && isIdleRef.current) {
+      const targetY = mousePosition.current.x * 0.5
+      const targetX = mousePosition.current.y * 0.3
+      headRef.current.rotation.y = THREE.MathUtils.lerp(headRef.current.rotation.y, targetY, 0.2)
+      headRef.current.rotation.x = THREE.MathUtils.lerp(headRef.current.rotation.x, targetX, 0.2)
+    }
+  })
+
+  // Click handler for attack animation
+  const handleClick = useCallback(() => {
+    if (!isIdleRef.current || isAttackingRef.current) return
+    if (!idleActionRef.current || !attackActionRef.current) return
+
+    isAttackingRef.current = true
+    
+    // Play attack animation
+    idleActionRef.current.fadeOut(0.3)
+    attackActionRef.current.setEffectiveTimeScale(0.5)
+    attackActionRef.current.reset().setLoop(false, 1).fadeIn(0.3).play()
+
+    // Return to idle after attack
+    const duration = attackActionRef.current.getClip().duration * 2
+    setTimeout(() => {
+      attackActionRef.current.fadeOut(0.3)
+      idleActionRef.current.reset().setLoop(true).fadeIn(0.3).play()
+      isAttackingRef.current = false
+    }, duration * 1000)
+  }, [])
+
+  // Global click listener
+  useEffect(() => {
+    window.addEventListener('click', handleClick)
+    return () => window.removeEventListener('click', handleClick)
+  }, [handleClick])
+
+  // Animation sequence: walk -> hello -> jump -> attackminiguns -> attackspin -> idle
+  useEffect(() => {
+    if (!actions || !names || names.length === 0) return
+
+    // Find all animations
+    const animationNames = {
+      walk: findAnimation(['walk', 'run']),
+      hello: findAnimation(['hello', 'wave']),
+      jump: findAnimation(['jump']),
+      attackMinigun: findAnimation(['attackminiguns', 'minigun']),
+      attackSpin: findAnimation(['attackspin', 'spin']),
+      idle: findAnimation(['iddle', 'idle']),
+      attackOnClick: findAnimation(['attackwithminigun', 'attackminiguns'])
+    }
+
+    // Store actions for click handler
+    if (animationNames.idle && actions[animationNames.idle]) {
+      idleActionRef.current = actions[animationNames.idle]
+    }
+    if (animationNames.attackOnClick && actions[animationNames.attackOnClick]) {
+      attackActionRef.current = actions[animationNames.attackOnClick]
+    }
+
+    // Build animation sequence
+    const sequence = ['walk', 'hello', 'jump', 'attackMinigun', 'attackSpin']
+      .map(key => animationNames[key])
+      .filter(name => name && actions[name])
+      .map(name => ({ name, action: actions[name] }))
+
+    if (sequence.length === 0) return
+
+    let currentIndex = 0
+    let timeout = null
+
+    const playNext = () => {
+      // Sequence complete - transition to idle
+      if (currentIndex >= sequence.length) {
+        if (idleActionRef.current) {
+          sequence[sequence.length - 1]?.action.fadeOut(0.5)
+          idleActionRef.current.reset().setLoop(true).fadeIn(0.5).play()
+          isIdleRef.current = true
+        }
+        return
+      }
+
+      const current = sequence[currentIndex]
+      const previous = currentIndex > 0 ? sequence[currentIndex - 1] : null
+
+      // Fade out previous
+      if (previous) previous.action.fadeOut(0.5)
+
+      // Play current (slow down attack animations)
+      const isAttack = current.name.toLowerCase().includes('attack')
+      if (isAttack) current.action.setEffectiveTimeScale(0.5)
+      current.action.reset().setLoop(false, 1).fadeIn(0.5).play()
+
+      // Schedule next
+      let duration = current.action.getClip().duration
+      if (isAttack) duration *= 2
+      currentIndex++
+      timeout = setTimeout(playNext, (duration - 0.3) * 1000)
+    }
+
+    playNext()
+    return () => { if (timeout) clearTimeout(timeout) }
+  }, [actions, names, findAnimation])
 
   return (
     <group ref={group} {...props} dispose={null}>
@@ -31,7 +174,6 @@ export function Robot(props) {
                     material={materials.Material}
                     skeleton={nodes.Object_7.skeleton}
                   />
-                  
                   <group name="robot_14" />
                 </group>
               </group>
