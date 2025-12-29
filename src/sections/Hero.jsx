@@ -4,7 +4,7 @@ import Button from "../components/Button";
 import HeroExperience from "../components/HeroModels/HeroExperience";
 import useHeroAnimations from "../animations/useHeroAnimations";
 import useGlitchEffect from "../animations/useGlitchEffect";
-import AnimatedCounter from "../components/AnimatedCounter";
+
 
 const Hero = () => {
   const slideRef = useRef(); // Container for the sliding word animation
@@ -43,7 +43,7 @@ const Hero = () => {
         <div className="hero-left">
           <div className="hero-content">
             {/* Sliding words animation */}
-            <div className="hero-text">
+            <div className="hero-text text-gray-400">
               <h1>
                 <span className="slide" ref={slideRef}>
                   <span className="wrapper">
@@ -84,12 +84,12 @@ const Hero = () => {
 
             {/* Introduction text */}
             <div className="hero-intro" ref={introRef}>
-              <span className="intro-greeting">Hey, I'm</span>
+              <span className="intro-greeting font-bold text-gray-300">Hey, I'm</span>
               <span className="intro-name">Shamishka</span>
             </div>
 
             {/* Description */}
-            <div className="hero-description" ref={descRef}>
+            <div className="hero-description !sm:text-2xl" ref={descRef}>
               <div className="description-text">
                 <span className="description-line">A Computer Engineering undergraduate,</span>
                 <span className="description-line">Fullstack Web Developer,</span>
@@ -97,14 +97,16 @@ const Hero = () => {
               </div>
             </div>
 
-            {/* CTA Button */}
-            <div className="hero-cta">
+            {/*
+            <div className="hero-cta relative -top-8 left-[20%]">
               <Button
                 className="cta-button"
                 id="button"
                 text="See my Work"
               />
-            </div>
+            </div> */}
+            
+             
           </div>
         </div>
 
@@ -116,7 +118,6 @@ const Hero = () => {
         </div>
       </div>
 
-      <AnimatedCounter />
     </section>
   );
 };

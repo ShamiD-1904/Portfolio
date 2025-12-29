@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import AnimatedCounter from "../components/AnimatedCounter";
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -53,7 +54,13 @@ const ShowcaseSection = () => {
 
   return (
     <section ref={sectionRef} id="work" className="app-showcase">
+
+
+
       <div className="w-full">
+
+        <div className="relative bottom-6"><AnimatedCounter /></div>
+
         <div className="showcaselayout">
           {/* LEFT */}
 

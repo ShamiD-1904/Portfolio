@@ -1,37 +1,83 @@
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 import { Robot } from "./Robot";
 import HeroLights from "./HeroLights";
+import SpeechBubble from "../SpeechBubble";
 
 const HeroExperience = () => {
   const isTablet = useMediaQuery({ query: "(max-width: 1024px)" });
-
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  const [showAttackBubble, setShowAttackBubble] = useState(false);
+
+  // Listen for click events to trigger attack bubble
+  useEffect(() => {
+    const handleClick = () => {
+      setShowAttackBubble(true);
+      // Hide after 2 seconds
+      setTimeout(() => setShowAttackBubble(false), 2000);
+    };
+
+    window.addEventListener('click', handleClick);
+    return () => window.removeEventListener('click', handleClick);
+  }, []);
 
   return (
-    <Canvas camera={{ position: !isMobile ? [-4, -4, 6] : [-8, 2, 3], fov: 30 }}>
-      <OrbitControls
-        enablePan={false}
-        enableRotate={!isMobile}
-        enableZoom={!isTablet && !isMobile}
-        maxDistance={20}
-        minDistance={5}
-        minPolarAngle={Math.PI / 5}
-        maxPolarAngle={Math.PI / 2}
+    <div className="relative w-full h-full">
+      {/* Robot Speech Bubble */}
+      <SpeechBubble 
+        text="Hey..! 👋"
+        appearDelay={1600}
+        duration={1676}
+        top="15%"
+        left="15%"
       />
 
-      <HeroLights />
+      <SpeechBubble 
+        text="Click anywhere IF YOU DARE.."
+        appearDelay={8000}
+        duration={5700}
+        top="20%"
+        left="-56%"
+        fontSize="1rem"
+        tailPosition="20rem"
+      />
 
-      <group
-        
-        scale={isMobile ? 0.8 : 1.2}
-        position={isMobile ? [0, -0.8, 0] : [0, -1.6, 0]}
-      >
-        <Robot />
-      </group>
-    </Canvas>
+      {/* Attack animation bubble */}
+      {showAttackBubble && (
+        <SpeechBubble 
+          text="Pew Pew! 🔫"
+          appearDelay={0}
+          duration={2000}
+         top="20%"
+        left="-32%"
+        fontSize="1.2rem"
+        tailPosition="10rem"
+        />
+      )}
+
+      <Canvas camera={{ position: !isMobile ? [-4, -4, 6] : [-8, 2, 3], fov: 30 }}>
+        <OrbitControls
+          enablePan={false}
+          enableRotate={!isMobile}
+          enableZoom={!isTablet && !isMobile}
+          maxDistance={20}
+          minDistance={5}
+          minPolarAngle={Math.PI / 5}
+          maxPolarAngle={Math.PI / 2}
+        />
+
+        <HeroLights />
+
+        <group
+          scale={isMobile ? 0.8 : 1.2}
+          position={isMobile ? [0, -0.8, 0] : [0, -1.6, 0]}
+        >
+          <Robot />
+        </group>
+      </Canvas>
+    </div>
   );
 };
 
