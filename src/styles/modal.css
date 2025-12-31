@@ -1,0 +1,200 @@
+/* ===== PROJECT MODAL ===== */
+
+@layer components {
+  .project-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .project-modal {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    max-height: 90vh;
+    background: rgba(15, 15, 30, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    overflow: hidden;
+    overflow-y: auto;
+    animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .modal-close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    @apply p-2 rounded-full;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+  }
+
+  .modal-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+  }
+
+  .modal-content {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 768px) {
+    .modal-content {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .modal-image-section {
+    position: relative;
+    height: 250px;
+    background: rgba(10, 10, 25, 0.8);
+  }
+
+  @media (min-width: 768px) {
+    .modal-image-section {
+      height: auto;
+      min-height: 500px;
+    }
+  }
+
+  .modal-image-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .modal-tags {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    @apply flex flex-wrap gap-2;
+  }
+
+  .modal-tag {
+    @apply px-3 py-1.5 text-xs font-medium rounded-full;
+    background: rgba(0, 194, 168, 0.2);
+    border: 1px solid rgba(0, 194, 168, 0.4);
+    color: var(--accent-cyan);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .modal-info-section {
+    @apply p-6 md:p-8;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .modal-header {
+    @apply space-y-3;
+  }
+
+  .modal-meta {
+    @apply flex items-center gap-3;
+  }
+
+  .modal-category {
+    @apply px-3 py-1 rounded-full text-sm font-medium;
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: var(--accent-blue);
+  }
+
+  .modal-year {
+    @apply text-white-50 text-sm;
+  }
+
+  .modal-title {
+    @apply text-3xl md:text-4xl font-bold;
+    background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .modal-description {
+    @apply text-white-50 leading-relaxed;
+  }
+
+  .modal-features {
+    @apply space-y-3;
+
+    h4 {
+      @apply text-lg font-semibold text-white;
+    }
+
+    ul {
+      @apply space-y-2;
+    }
+
+    li {
+      @apply flex items-center gap-2 text-white-50;
+
+      svg {
+        color: var(--accent-cyan);
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  .modal-actions {
+    @apply flex flex-wrap gap-3 mt-auto pt-4;
+  }
+
+  .modal-btn {
+    @apply flex items-center gap-2 px-5 py-2.5 rounded-full font-medium text-sm;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+
+  .modal-btn-primary {
+    background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-blue) 100%);
+    color: white;
+  }
+
+  .modal-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 194, 168, 0.3);
+  }
+
+  .modal-btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+  }
+
+  .modal-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+  }
+}

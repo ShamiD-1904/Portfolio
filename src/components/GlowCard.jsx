@@ -1,8 +1,7 @@
-import React, { useRef } from 'react'
+import { useRef, memo } from 'react';
 
-const GlowCard = ({card, childern, index}) => {
-
-const cardRefs = useRef([]);
+const GlowCard = memo(({ card, children, index }) => {
+  const cardRefs = useRef([]);
 
 const handleMouseMove = (index) => (e) => {
     const card = cardRefs.current[index];
@@ -36,10 +35,10 @@ const handleMouseMove = (index) => (e) => {
                 {card.review}
             </p>
         </div>
-        {childern}
+        {children}
       
     </div>
-  )
-}
+  );
+});
 
-export default GlowCard
+export default GlowCard;

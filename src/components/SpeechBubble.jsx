@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect, memo } from 'react';
 
-const SpeechBubble = ({ 
+const SpeechBubble = memo(({ 
   text = "Hi! 👋", 
   appearDelay = 3000, 
   duration = null,
@@ -88,6 +88,6 @@ const SpeechBubble = ({
       </div>
     </div>
   );
-}
+});
 
-export default SpeechBubble
+export default SpeechBubble;

@@ -1,0 +1,39 @@
+/* ===== TESTIMONIALS SECTION ===== */
+
+@layer components {
+  .footer {
+    @apply my-10 md:mt-20 mt-10 text-white-50 px-5 md:px-20 xl:px-20 flex items-center justify-center;
+
+    .footer-container {
+      @apply grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-0 w-full;
+      background: rgba(15, 15, 30, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 2rem;
+    }
+
+    p {
+      @apply text-center md:text-start;
+    }
+
+    .socials {
+      @apply flex items-center justify-center gap-5;
+
+      .icon {
+        @apply flex justify-center items-center rounded-xl size-10 md:size-12 cursor-pointer transition-all duration-300;
+        background: rgba(15, 15, 30, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+
+        &:hover {
+          background: rgba(0, 194, 168, 0.2);
+          border-color: rgba(0, 194, 168, 0.5);
+          transform: translateY(-2px);
+        }
+      }
+
+      img {
+        @apply inline-block;
+      }
+    }
+  }
+}

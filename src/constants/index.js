@@ -27,9 +27,9 @@ const words = [
 ]
 
 const counterItems = [
-  { value: 5, suffix: " ", label: "Years of Experience" },
-  { value: 12, suffix: " ", label: "Satisfied Clients" },
+  { value: 4, suffix: " ", label: "Years of Experience" },
   { value: 19, suffix: " ", label: "Completed Projects" },
+  { value: 12, suffix: " ", label: "Satisfied Clients" },
   { value: 95, suffix: "%", label: "Client Retention Rate" },
 ];
 
@@ -261,6 +261,88 @@ const socialImgs = [
   },
 ];
 
+// Projects data for ShowcaseSection
+const projectsData = [
+  {
+    id: 1,
+    title: "NexCare",
+    category: "Healthcare",
+    year: "2024",
+    image: "/images/project1.png",
+    tags: ["React Native", "Expo", "TailwindCSS"],
+    shortDescription: "A streamlined digital solution for modern healthcare management.",
+    fullDescription: "NexCare is a comprehensive healthcare management platform that revolutionizes patient scheduling and medical record management. Built with React Native and Expo for cross-platform compatibility, it offers a seamless user experience with real-time appointment booking, prescription tracking, and secure communication between patients and healthcare providers.",
+    features: ["Patient Scheduling", "Medical Records", "Real-time Chat", "Prescription Management"],
+    liveUrl: "#",
+    githubUrl: "#",
+  },
+  {
+    id: 2,
+    title: "Library Management",
+    category: "Education",
+    year: "2024",
+    image: "/images/project2.png",
+    tags: ["Next.js", "PostgreSQL", "Prisma"],
+    shortDescription: "Comprehensive platform for managing library resources.",
+    fullDescription: "A full-featured library management system that streamlines book cataloging, member management, and borrowing processes. Features include advanced search, automated late fee calculation, and detailed analytics for library administrators.",
+    features: ["Book Cataloging", "Member Management", "Borrowing System", "Analytics Dashboard"],
+    liveUrl: "#",
+    githubUrl: "#",
+  },
+  {
+    id: 3,
+    title: "YC Directory",
+    category: "Web App",
+    year: "2024",
+    image: "/images/project3.png",
+    tags: ["Next.js", "Sanity", "TailwindCSS"],
+    shortDescription: "Startup showcase app for discovering innovative companies.",
+    fullDescription: "YC Directory is a curated platform showcasing Y Combinator startups and innovative companies. Users can discover, filter, and connect with startups based on industry, funding stage, and technology stack. Features include startup profiles, founder information, and investment details.",
+    features: ["Startup Profiles", "Advanced Filtering", "Founder Connect", "Investment Tracking"],
+    liveUrl: "#",
+    githubUrl: "#",
+  },
+  {
+    id: 4,
+    title: "Project 4 Placeholder",
+    category: "Category",
+    year: "2024",
+    image: "/images/project1.png",
+    tags: ["Tech1", "Tech2", "Tech3"],
+    shortDescription: "Short description for your fourth project.",
+    fullDescription: "Full description for your fourth project. Add details about the project, its purpose, and the technologies used.",
+    features: ["Feature 1", "Feature 2", "Feature 3", "Feature 4"],
+    liveUrl: "#",
+    githubUrl: "#",
+  },
+  {
+    id: 5,
+    title: "Project 5 Placeholder",
+    category: "Category",
+    year: "2024",
+    image: "/images/project2.png",
+    tags: ["Tech1", "Tech2", "Tech3"],
+    shortDescription: "Short description for your fifth project.",
+    fullDescription: "Full description for your fifth project. Add details about the project, its purpose, and the technologies used.",
+    features: ["Feature 1", "Feature 2", "Feature 3", "Feature 4"],
+    liveUrl: "#",
+    githubUrl: "#",
+  },
+  {
+    id: 6,
+    title: "Project 6 Placeholder",
+    category: "Category",
+    year: "2024",
+    image: "/images/project3.png",
+    tags: ["Tech1", "Tech2", "Tech3"],
+    shortDescription: "Short description for your sixth project.",
+    fullDescription: "Full description for your sixth project. Add details about the project, its purpose, and the technologies used.",
+    features: ["Feature 1", "Feature 2", "Feature 3", "Feature 4"],
+    liveUrl: "#",
+    githubUrl: "#",
+  },
+];
+
 export {
   words,
   abilities,
@@ -273,4 +355,5 @@ export {
   techStackIcons,
   techStackImgs,
   navLinks,
+  projectsData,
 };

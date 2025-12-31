@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react';
+import { useEffect, memo } from 'react';
 import { Environment, OrbitControls, useGLTF } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
 import * as THREE from "three";
 
-const TechIcon = ({ model }) => {
-
-  const scene = useGLTF(model.modelPath)
+const TechIcon = memo(({ model }) => {
+  const scene = useGLTF(model.modelPath);
 
   useEffect(() => {
     if(model.name === 'Interactive Developer' ) {
@@ -34,10 +33,8 @@ const TechIcon = ({ model }) => {
         <primitive object={scene.scene} />
         </group>
       </Float>
-
-       
     </Canvas>
-  )
-}
+  );
+});
 
-export default TechIcon
+export default TechIcon;

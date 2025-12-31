@@ -1,8 +1,8 @@
-import React, { useRef } from "react";
+import { useRef, memo } from "react";
 import { counterItems } from "../constants";
 import CountUp from 'react-countup';
 
-const AnimatedCounter = () => {
+const AnimatedCounter = memo(() => {
   const cardRefs = useRef([]);
 
   const handleMouseMove = (index) => (e) => {
@@ -57,6 +57,6 @@ const AnimatedCounter = () => {
       </div>
     </div>
   );
-};
+});
 
 export default AnimatedCounter;

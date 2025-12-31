@@ -11,7 +11,7 @@ import { useGLTF, useAnimations } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
-export function Robot(props) {
+export function Robot({ isVisible = true, ...props }) {
   const group = useRef()
   const headRef = useRef()
   const { nodes, materials, animations } = useGLTF('models/robot2.glb')
@@ -22,7 +22,10 @@ export function Robot(props) {
   const isAttackingRef = useRef(false)
   const idleActionRef = useRef(null)
   const attackActionRef = useRef(null)
+  const helloActionRef = useRef(null)
   const mousePosition = useRef({ x: 0, y: 0 })
+  const wasVisibleRef = useRef(true)
+  const hasPlayedInitialSequence = useRef(false)
 
   // Animation finder helper
   const findAnimation = useCallback((searchTerms) => {
@@ -31,6 +34,41 @@ export function Robot(props) {
       searchTerms.some(term => name.toLowerCase().includes(term.toLowerCase()))
     )
   }, [names])
+
+  // Play wave animation when returning to viewport
+  const playWaveAnimation = useCallback(() => {
+    if (!helloActionRef.current || !idleActionRef.current) return;
+    if (isAttackingRef.current) return;
+    
+    // Fade out current idle, play hello
+    idleActionRef.current.fadeOut(0.3);
+    helloActionRef.current.reset().setLoop(false, 1).fadeIn(0.3).play();
+    
+    // Return to idle after wave
+    const duration = helloActionRef.current.getClip().duration;
+    setTimeout(() => {
+      helloActionRef.current.fadeOut(0.3);
+      idleActionRef.current.reset().setLoop(true).fadeIn(0.3).play();
+    }, duration * 1000);
+  }, []);
+
+  // Pause/resume animations based on visibility & wave on return
+  useEffect(() => {
+    if (!actions) return;
+    
+    Object.values(actions).forEach((action) => {
+      if (action) {
+        action.paused = !isVisible;
+      }
+    });
+
+    // Wave when coming back into view (after initial sequence played)
+    if (isVisible && !wasVisibleRef.current && hasPlayedInitialSequence.current) {
+      playWaveAnimation();
+    }
+    
+    wasVisibleRef.current = isVisible;
+  }, [isVisible, actions, playWaveAnimation]);
 
   // Mouse position tracking
   useEffect(() => {
@@ -55,8 +93,9 @@ export function Robot(props) {
     }
   }, [nodes])
 
-  // Head follows cursor (only when idle)
+  // Head follows cursor (only when idle and visible)
   useFrame(() => {
+    if (!isVisible) return; // Skip frame updates when not visible
     if (headRef.current && isIdleRef.current) {
       const targetY = mousePosition.current.x * 0.5
       const targetX = mousePosition.current.y * 0.3
@@ -67,6 +106,7 @@ export function Robot(props) {
 
   // Click handler for attack animation
   const handleClick = useCallback(() => {
+    if (!isVisible) return; // Don't respond to clicks when not visible
     if (!isIdleRef.current || isAttackingRef.current) return
     if (!idleActionRef.current || !attackActionRef.current) return
 
@@ -107,12 +147,15 @@ export function Robot(props) {
       attackOnClick: findAnimation(['attackwithminigun', 'attackminiguns'])
     }
 
-    // Store actions for click handler
+    // Store actions for click handler and wave
     if (animationNames.idle && actions[animationNames.idle]) {
       idleActionRef.current = actions[animationNames.idle]
     }
     if (animationNames.attackOnClick && actions[animationNames.attackOnClick]) {
       attackActionRef.current = actions[animationNames.attackOnClick]
+    }
+    if (animationNames.hello && actions[animationNames.hello]) {
+      helloActionRef.current = actions[animationNames.hello]
     }
 
     // Build animation sequence
@@ -133,6 +176,7 @@ export function Robot(props) {
           sequence[sequence.length - 1]?.action.fadeOut(0.5)
           idleActionRef.current.reset().setLoop(true).fadeIn(0.5).play()
           isIdleRef.current = true
+          hasPlayedInitialSequence.current = true // Mark sequence as complete
         }
         return
       }

@@ -1,92 +1,11 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import AnimatedCounter from "../components/AnimatedCounter";
+import { projectsData } from "../constants";
 
 gsap.registerPlugin(ScrollTrigger);
-
-// Projects data - Add new projects here easily
-const projectsData = [
-  {
-    id: 1,
-    title: "NexCare",
-    category: "Healthcare",
-    year: "2024",
-    image: "/images/project1.png",
-    tags: ["React Native", "Expo", "TailwindCSS"],
-    shortDescription: "A streamlined digital solution for modern healthcare management.",
-    fullDescription: "NexCare is a comprehensive healthcare management platform that revolutionizes patient scheduling and medical record management. Built with React Native and Expo for cross-platform compatibility, it offers a seamless user experience with real-time appointment booking, prescription tracking, and secure communication between patients and healthcare providers.",
-    features: ["Patient Scheduling", "Medical Records", "Real-time Chat", "Prescription Management"],
-    liveUrl: "#",
-    githubUrl: "#",
-  },
-  {
-    id: 2,
-    title: "Library Management",
-    category: "Education",
-    year: "2024",
-    image: "/images/project2.png",
-    tags: ["Next.js", "PostgreSQL", "Prisma"],
-    shortDescription: "Comprehensive platform for managing library resources.",
-    fullDescription: "A full-featured library management system that streamlines book cataloging, member management, and borrowing processes. Features include advanced search, automated late fee calculation, and detailed analytics for library administrators.",
-    features: ["Book Cataloging", "Member Management", "Borrowing System", "Analytics Dashboard"],
-    liveUrl: "#",
-    githubUrl: "#",
-  },
-  {
-    id: 3,
-    title: "YC Directory",
-    category: "Web App",
-    year: "2024",
-    image: "/images/project3.png",
-    tags: ["Next.js", "Sanity", "TailwindCSS"],
-    shortDescription: "Startup showcase app for discovering innovative companies.",
-    fullDescription: "YC Directory is a curated platform showcasing Y Combinator startups and innovative companies. Users can discover, filter, and connect with startups based on industry, funding stage, and technology stack. Features include startup profiles, founder information, and investment details.",
-    features: ["Startup Profiles", "Advanced Filtering", "Founder Connect", "Investment Tracking"],
-    liveUrl: "#",
-    githubUrl: "#",
-  },
-  {
-    id: 2,
-    title: "Library Management",
-    category: "Education",
-    year: "2024",
-    image: "/images/project2.png",
-    tags: ["Next.js", "PostgreSQL", "Prisma"],
-    shortDescription: "Comprehensive platform for managing library resources.",
-    fullDescription: "A full-featured library management system that streamlines book cataloging, member management, and borrowing processes. Features include advanced search, automated late fee calculation, and detailed analytics for library administrators.",
-    features: ["Book Cataloging", "Member Management", "Borrowing System", "Analytics Dashboard"],
-    liveUrl: "#",
-    githubUrl: "#",
-  },
-  {
-    id: 2,
-    title: "Library Management",
-    category: "Education",
-    year: "2024",
-    image: "/images/project2.png",
-    tags: ["Next.js", "PostgreSQL", "Prisma"],
-    shortDescription: "Comprehensive platform for managing library resources.",
-    fullDescription: "A full-featured library management system that streamlines book cataloging, member management, and borrowing processes. Features include advanced search, automated late fee calculation, and detailed analytics for library administrators.",
-    features: ["Book Cataloging", "Member Management", "Borrowing System", "Analytics Dashboard"],
-    liveUrl: "#",
-    githubUrl: "#",
-  },{
-    id: 2,
-    title: "Library Management",
-    category: "Education",
-    year: "2024",
-    image: "/images/project2.png",
-    tags: ["Next.js", "PostgreSQL", "Prisma"],
-    shortDescription: "Comprehensive platform for managing library resources.",
-    fullDescription: "A full-featured library management system that streamlines book cataloging, member management, and borrowing processes. Features include advanced search, automated late fee calculation, and detailed analytics for library administrators.",
-    features: ["Book Cataloging", "Member Management", "Borrowing System", "Analytics Dashboard"],
-    liveUrl: "#",
-    githubUrl: "#",
-  },
-  // Add more projects here following the same structure
-];
 
 const ShowcaseSection = () => {
   const sectionRef = useRef(null);
@@ -141,6 +60,10 @@ const ShowcaseSection = () => {
 
   const handleShowMore = () => {
     setShowAll(true);
+  };
+
+  const handleShowLess = () => {
+    setShowAll(false);
   };
 
   return (
@@ -202,7 +125,7 @@ const ShowcaseSection = () => {
           ))}
         </div>
 
-        {/* Show More Button */}
+        {/* Show More / Show Less Buttons */}
         {hasMoreProjects && !showAll && (
           <div className="show-more-wrapper">
             <button className="show-more-btn" onClick={handleShowMore}>
@@ -210,6 +133,17 @@ const ShowcaseSection = () => {
               <span className="show-more-count">+{projectsData.length - INITIAL_DISPLAY_COUNT}</span>
               <svg className="show-more-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M10 4V16M10 16L4 10M10 16L16 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        )}
+
+        {hasMoreProjects && showAll && (
+          <div className="show-more-wrapper">
+            <button className="show-less-btn" onClick={handleShowLess}>
+              <span>Show Less</span>
+              <svg className="show-less-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 16V4M10 4L4 10M10 4L16 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
           </div>

@@ -1,0 +1,118 @@
+/* ===== BASE STYLES ===== */
+/* Core styles, CSS variables, and global settings */
+
+/* Primary font: Space Grotesk - Modern geometric sans-serif */
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap");
+/* Display font: Syne for bold headlines */
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&display=swap");
+
+@import "tailwindcss";
+
+:root {
+  --gradient: radial-gradient(circle, #1a1a2e 0%, #0f0f1e 100%);
+  --glass-bg: rgba(8, 8, 20, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shine: rgba(255, 255, 255, 0.03);
+  
+  /* Updated 2025 accent colors - warmer, more vibrant palette */
+  --accent-cyan: #22D3EE;
+  --accent-purple: #A78BFA;
+  --accent-pink: #F472B6;
+  --accent-orange: #FB923C;
+  --accent-blue: #60A5FA;
+  
+  /* Text colors */
+  --text-primary: #F1F5F9;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --text-dim: #64748B;
+  
+  /* Font families */
+  --font-primary: "Space Grotesk", sans-serif;
+  --font-display: "Syne", sans-serif;
+  --font-mono: ui-monospace, monospace;
+}
+
+html,
+body {
+  width: 100dvw;
+  overflow-x: hidden;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 194, 168, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 80% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+    radial-gradient(ellipse 50% 30% at 20% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 40%),
+    linear-gradient(180deg, #000000 0%, #050510 30%, #0a0a18 60%, #000000 100%);
+  background-attachment: fixed;
+  color: white;
+  scroll-behavior: smooth;
+  font-family: var(--font-primary);
+}
+
+section {
+  width: 100dvw;
+}
+
+@theme {
+  --font-sans: "Space Grotesk", sans-serif;
+  --color-white-50: #e8f0ff;
+  --color-black-50: #1a1a2e;
+  --color-black-100: #0f0f1e;
+  --color-black-200: #1e1e30;
+  --color-blue-50: #60a5fa;
+  --color-blue-100: #1e293b;
+  --color-cyan-50: #00C2A8;
+  --color-purple-50: #8B5CF6;
+}
+
+@layer utilities {
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
+
+  .flex-col-center {
+    @apply flex flex-col justify-center items-center;
+  }
+}
+
+@layer components {
+  .padding-x {
+    @apply px-5 md:px-10;
+  }
+
+  .padding-x-lg {
+    @apply px-5 md:px-20;
+  }
+
+  .section-padding {
+    @apply px-5 md:px-10 md:mt-40 mt-20;
+  }
+
+  .mt-responsive {
+    @apply xl:mt-20 md:mt-0 mt-40;
+  }
+
+  /* General Grids */
+  .grid-base {
+    @apply grid grid-cols-1;
+  }
+
+  .grid-2-cols {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-6;
+  }
+
+  .grid-3-cols {
+    @apply grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6;
+  }
+
+  .grid-3-cols-md-tight {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-0;
+  }
+
+  .grid-4-cols {
+    @apply grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-7;
+  }
+
+  .grid-12-cols {
+    @apply grid grid-cols-1 xl:grid-cols-12 gap-10;
+  }
+}

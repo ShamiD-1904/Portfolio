@@ -1,6 +1,6 @@
-import React from 'react'
+import { memo } from 'react';
 
-const Button = ({text, className, id}) => {
+const Button = memo(({ text, className, id }) => {
   return (
     <a
     onClick={(e) => {
@@ -27,7 +27,7 @@ const Button = ({text, className, id}) => {
         <span className='text_button'>{text}</span>
       </button>
     </a>
-  )
-}
+  );
+});
 
-export default Button
+export default Button;
