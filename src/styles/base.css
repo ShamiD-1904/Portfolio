@@ -46,6 +46,28 @@ body {
   color: white;
   scroll-behavior: smooth;
   font-family: var(--font-primary);
+  /* Hide scrollbar but keep scroll functionality */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 194, 168, 0.3) transparent;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 194, 168, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 194, 168, 0.5);
 }
 
 section {
@@ -75,6 +97,20 @@ section {
 }
 
 @layer components {
+  /* Section Title - matches hero aesthetic */
+  .section-title {
+    @apply font-semibold md:text-5xl text-3xl text-center;
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg,
+      #F1F5F9 0%,
+      #E2E8F0 40%,
+      #94A3B8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
   .padding-x {
     @apply px-5 md:px-10;
   }
