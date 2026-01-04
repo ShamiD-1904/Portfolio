@@ -8,7 +8,9 @@ import SpeechBubble from "../SpeechBubble";
 
 const HeroExperience = () => {
   const isTablet = useMediaQuery({ query: "(max-width: 1024px)" });
+  const isSmallMonitor = useMediaQuery({ query: "(max-width: 1280px)" });
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  const isSmallScreen = isTablet || isMobile || isSmallMonitor; // For hiding speech bubbles and locking controls
   const [showAttackBubble, setShowAttackBubble] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const containerRef = useRef(null);
@@ -29,8 +31,10 @@ const HeroExperience = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Listen for click events to trigger attack bubble
+  // Listen for click events to trigger attack bubble (only on larger screens)
   useEffect(() => {
+    if (isSmallScreen) return; // Don't add click listener on small screens
+    
     const handleClick = () => {
       setShowAttackBubble(true);
       // Hide after 2 seconds
@@ -39,50 +43,74 @@ const HeroExperience = () => {
 
     window.addEventListener("click", handleClick);
     return () => window.removeEventListener("click", handleClick);
-  }, []);
+  }, [isSmallScreen]);
+
+  // Camera and robot positioning based on screen size
+  const getCameraPosition = () => {
+    if (isMobile) return [-6, 0, 4]; // Front view for mobile
+    if (isTablet) return [-6, 0, 4]; // Front view for tablet
+    return [-4, -4, 6]; // Default angled view for desktop
+  };
+
+  const getRobotScale = () => {
+    if (isMobile) return 1.2;
+    if (isTablet) return 1;
+    if (isSmallMonitor) return 0.8;
+    return 1.2;
+  };
+
+  const getRobotPosition = () => {
+    if (isMobile) return [0, -2, 0];
+    if (isTablet) return [0, -1.2, 0];
+    return [0, -1.6, 0];
+  };
 
   return (
     <div ref={containerRef} className="relative w-full h-full">
-      {/* Robot Speech Bubble */}
-      <SpeechBubble
-        text="Hey..! 👋"
-        appearDelay={1600}
-        duration={1676}
-        top="15%"
-        left="15%"
-      />
+      {/* Robot Speech Bubbles - Only show on larger screens */}
+      {!isSmallScreen && (
+        <>
+          <SpeechBubble
+            text="Hey..! 👋"
+            appearDelay={1600}
+            duration={1676}
+            top="15%"
+            left="15%"
+          />
 
-      <SpeechBubble
-        text="Click anywhere IF YOU DARE.."
-        appearDelay={8000}
-        duration={5700}
-        top="20%"
-        left="-56%"
-        fontSize="1rem"
-        tailPosition="20rem"
-      />
+          <SpeechBubble
+            text="Click anywhere IF YOU DARE.."
+            appearDelay={8000}
+            duration={5700}
+            top="20%"
+            left="-56%"
+            fontSize="1rem"
+            tailPosition="20rem"
+          />
 
-      {/* Attack animation bubble */}
-      {showAttackBubble && (
-        <SpeechBubble
-          text="Pew Pew! 🔫"
-          appearDelay={0}
-          duration={2000}
-          top="20%"
-          left="-32%"
-          fontSize="1.2rem"
-          tailPosition="10rem"
-        />
+          {/* Attack animation bubble */}
+          {showAttackBubble && (
+            <SpeechBubble
+              text="Pew Pew! 🔫"
+              appearDelay={0}
+              duration={2000}
+              top="20%"
+              left="-32%"
+              fontSize="1.2rem"
+              tailPosition="10rem"
+            />
+          )}
+        </>
       )}
 
       <Canvas
-        camera={{ position: !isMobile ? [-4, -4, 6] : [-8, 2, 3], fov: 30 }}
+        camera={{ position: getCameraPosition(), fov: isMobile ? 35 : 30 }}
         frameloop={isVisible ? "always" : "never"}
       >
         <OrbitControls
           enablePan={false}
-          enableRotate={!isMobile}
-          enableZoom={!isTablet && !isMobile}
+          enableRotate={!isSmallScreen} // Lock rotation on mobile and tablet
+          enableZoom={!isSmallScreen} // Lock zoom on mobile and tablet
           maxDistance={20}
           minDistance={5}
           minPolarAngle={Math.PI / 5}
@@ -92,8 +120,8 @@ const HeroExperience = () => {
         <HeroLights />
 
         <group
-          scale={isMobile ? 0.8 : 1.2}
-          position={isMobile ? [0, -0.8, 0] : [0, -1.6, 0]}
+          scale={getRobotScale()}
+          position={getRobotPosition()}
         >
           <Robot isVisible={isVisible} />
         </group>
