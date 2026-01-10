@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect, memo } from "react";
+import { useState, useRef, memo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
+import { useIntersectionObserver } from "../hooks";
 
 // Placeholder 3D component - replace with actual model later
 const ContactModel = () => {
@@ -14,11 +15,12 @@ const ContactModel = () => {
 
 const Contact = () => {
   const formRef = useRef(null);
-  const sectionRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
-  const [isVisible, setIsVisible] = useState(false);
+  
+  // Use custom intersection observer hook
+  const { ref: sectionRef, isVisible } = useIntersectionObserver({ threshold: 0.1 });
   
   const [formData, setFormData] = useState({
     name: "",
@@ -69,22 +71,6 @@ const Contact = () => {
       setLoading(false);
     }
   };
-
-  // Intersection Observer to detect when section is in viewport
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting);
-      },
-      { threshold: 0.1 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <section ref={sectionRef} className="contact-section" id="contact">

@@ -1,35 +1,25 @@
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { useState, useEffect, useRef } from "react";
-import { useMediaQuery } from "react-responsive";
+import { useState, useEffect } from "react";
 import { Robot } from "./Robot";
 import HeroLights from "./HeroLights";
 import SpeechBubble from "../SpeechBubble";
+import { 
+  useIsMobile, 
+  useIsTablet, 
+  useIsSmallMonitor,
+  useIntersectionObserver 
+} from "../../hooks";
 
 const HeroExperience = () => {
-  const isTablet = useMediaQuery({ query: "(max-width: 1024px)" });
-  const isSmallMonitor = useMediaQuery({ query: "(max-width: 1280px)" });
-  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
-  const isSmallScreen = isTablet || isMobile || isSmallMonitor; // For hiding speech bubbles and locking controls
+  const isMobile = useIsMobile();
+  const isTablet = useIsTablet();
+  const isSmallMonitor = useIsSmallMonitor();
+  const isSmallScreen = isMobile || isTablet || isSmallMonitor; // For hiding speech bubbles and locking controls
   const [showAttackBubble, setShowAttackBubble] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-  const containerRef = useRef(null);
-
-  // Intersection Observer to detect when component is in viewport
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting);
-      },
-      { threshold: 0.1 } // Trigger when 10% visible
-    );
-
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
+  
+  // Use custom intersection observer hook
+  const { ref: containerRef, isVisible } = useIntersectionObserver({ threshold: 0.1 });
 
   // Listen for click events to trigger attack bubble (only on larger screens)
   useEffect(() => {
@@ -66,7 +56,7 @@ const HeroExperience = () => {
   };
 
   return (
-    <div ref={containerRef} className="relative w-full h-full">
+    <div ref={containerRef} className= {`${isMobile ? 'hidden' : 'block'} relative w-full h-full`}>
       {/* Robot Speech Bubbles - Only show on larger screens */}
       {!isSmallScreen && (
         <>

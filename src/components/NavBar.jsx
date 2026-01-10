@@ -1,18 +1,9 @@
-import { useEffect, useState, memo } from "react";
+import { memo } from "react";
 import { navLinks } from "../constants";
+import { useIsScrolled } from "../hooks";
 
 const NavBar = memo(() => {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 10;
-      setScrolled(isScrolled);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const scrolled = useIsScrolled(10);
 
   return (
     <header className={`navbar ${scrolled ? "scrolled" : "not-scrolled"}`}>

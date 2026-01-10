@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { uploadImage } from '../lib/supabase';
+import { useScrollLock } from '../hooks';
 
 const TestimonialModal = ({ isOpen, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -12,37 +13,9 @@ const TestimonialModal = ({ isOpen, onClose, onSubmit }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef(null);
   const modalRef = useRef(null);
-  const scrollPositionRef = useRef(0);
 
-  // Lock body scroll when modal is open and preserve scroll position
-  useEffect(() => {
-    if (isOpen) {
-      // Save current scroll position
-      scrollPositionRef.current = window.scrollY;
-      // Lock body
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollPositionRef.current}px`;
-      document.body.style.left = '0';
-      document.body.style.right = '0';
-      document.body.style.overflow = 'hidden';
-    } else {
-      // Restore body
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
-      document.body.style.overflow = '';
-      // Restore scroll position
-      window.scrollTo(0, scrollPositionRef.current);
-    }
-    return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
+  // Use custom scroll lock hook
+  useScrollLock(isOpen);
 
   // Handle scroll on overlay to scroll modal content
   const handleOverlayWheel = (e) => {

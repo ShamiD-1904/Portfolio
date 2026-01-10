@@ -1,4 +1,4 @@
-import { useRef, memo, Suspense, useMemo, useState, useEffect } from 'react';
+import { useRef, memo, Suspense, useMemo, useEffect } from 'react';
 import TitleHeader from '../components/TitleHeader';
 import { abilities, techStackIcons } from '../constants';
 import { useGSAP } from '@gsap/react';
@@ -6,6 +6,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, useGLTF, OrbitControls } from '@react-three/drei';
+import { useIntersectionObserver } from '../hooks';
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -95,25 +96,13 @@ const additionalSkills = ["java",'TypeScript', 'Next.js', 'TailwindCSS', 'Postgr
 
 const SkillsSection = () => {
   const sectionRef = useRef(null);
-  const techGridRef = useRef(null);
-  const [isInView, setIsInView] = useState(false);
   const controlsRef = useRef();
-
-  // IntersectionObserver to detect when tech grid is in viewport
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsInView(entry.isIntersecting);
-      },
-      { threshold: 0.1, rootMargin: '50px' }
-    );
-
-    if (techGridRef.current) {
-      observer.observe(techGridRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
+  
+  // Use custom intersection observer hook for tech grid
+  const { ref: techGridRef, isVisible: isInView } = useIntersectionObserver({ 
+    threshold: 0.1, 
+    rootMargin: '50px' 
+  });
 
   useEffect(() => {
     if (!controlsRef.current) return;

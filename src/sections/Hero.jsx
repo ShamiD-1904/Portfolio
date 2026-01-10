@@ -4,9 +4,11 @@ import Button from "../components/Button";
 import HeroExperience from "../components/HeroModels/HeroExperience";
 import useHeroAnimations from "../animations/useHeroAnimations";
 import useGlitchEffect from "../animations/useGlitchEffect";
+import { useIsMobile } from "../hooks";
 
 
 const Hero = () => {
+  const isMobile = useIsMobile();
   const slideRef = useRef(); // Container for the sliding word animation
   const slideItemsRef = useRef([]); // Array of individual sliding word elements
   const headline1Ref = useRef(); // "Engineering Solutions. Delivering Results."
@@ -32,7 +34,7 @@ const Hero = () => {
   });
 
   return (
-    <section className="hero-section" id="hero">
+    <section className= {`hero-section ${isMobile ? 'h-auto' : 'min-h-screen'}`} id="hero">
       {/* Background decoration */}
       <div className="hero-bg-decoration">
         <img src="/images/bg.png" alt="background" />
@@ -111,11 +113,13 @@ const Hero = () => {
         </div>
 
         {/* RIGHT: 3D MODEL */}
+        { !isMobile &&
         <div className="hero-right">
           <div className="hero-3d-wrapper">
             <HeroExperience />
           </div>
         </div>
+}
       </div>
 
     </section>
