@@ -1,6 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
 import TitleHeader from '../components/TitleHeader';
-import { testimonials as fallbackTestimonials } from '../constants';
 import TestimonialCard from '../components/TestimonialCard';
 import AddTestimonialCard from '../components/AddTestimonialCard';
 import TestimonialModal from '../components/TestimonialModal';
@@ -8,6 +7,28 @@ import { fetchTestimonials, addTestimonial, supabase } from '../lib/supabase';
 
 const INITIAL_VISIBLE_COUNT = 6;
 const SHOW_MORE_STEP = 4;
+
+// Helper function to get optimized image URL
+const getOptimizedImageUrl = (imgPath) => {
+  if (!imgPath || !supabase) return imgPath;
+  
+  // If it's already a full URL, return as is
+  if (imgPath.startsWith('http')) return imgPath;
+  
+  // Get the public URL from Supabase Storage
+  const { data } = supabase.storage
+    .from('testimonial-images')
+    .getPublicUrl(imgPath, {
+      transform: {
+        width: 100,
+        height: 100,
+        format: 'webp',
+        quality: 80
+      }
+    });
+  
+  return data?.publicUrl || imgPath;
+};
 
 const Testimonials = () => {
   const [testimonials, setTestimonials] = useState([]);
@@ -23,8 +44,7 @@ const Testimonials = () => {
         
         if (error) {
           console.error('Error fetching testimonials:', error);
-          // Fallback to constants if Supabase fails
-          setTestimonials(fallbackTestimonials);
+          setTestimonials([]);
         } else if (data && data.length > 0) {
           // Transform Supabase data to match our component format
           const formattedData = data.map(item => ({
@@ -32,18 +52,17 @@ const Testimonials = () => {
             name: item.name,
             mentions: item.mentions || '',
             review: item.review,
-            imgPath: item.img_path,
+            imgPath: getOptimizedImageUrl(item.img_path), // Apply WebP optimization
             isHighlighted: !!item.is_highlighted,
             createdAt: item.created_at,
           }));
           setTestimonials(formattedData);
         } else {
-          // No data in Supabase, use fallback
-          setTestimonials(fallbackTestimonials);
+          setTestimonials([]);
         }
       } else {
-        // Supabase not configured, use fallback
-        setTestimonials(fallbackTestimonials);
+        console.warn('Supabase not configured');
+        setTestimonials([]);
       }
     };
     
@@ -128,7 +147,7 @@ const Testimonials = () => {
           <div className="spotlight-copy">
             <h3 className="spotlight-title">Trusted feedback, real results.</h3>
             <p className="spotlight-desc">
-              A few words from clients and collaborators I’ve worked with. Highlighted testimonials are featured first.
+              A few words from clients and collaborators I've worked with. Highlighted testimonials are featured first.
             </p>
           </div>
 

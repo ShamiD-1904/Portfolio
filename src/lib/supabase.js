@@ -99,3 +99,78 @@ export const addTestimonial = async (testimonial) => {
   
   return { data, error };
 };
+// Fetch all projects
+export const fetchProjects = async () => {
+  if (!supabase) return { data: null, error: 'Supabase not configured' };
+  
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  return { data, error };
+};
+
+// Fetch projects by type (web or ai)
+export const fetchProjectsByType = async (type) => {
+  if (!supabase) return { data: null, error: 'Supabase not configured' };
+  
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('type', type)
+    .order('created_at', { ascending: false });
+
+  return { data, error };
+};
+
+// Add a new project
+export const addProject = async (projectData) => {
+  if (!supabase) return { data: null, error: 'Supabase not configured' };
+  
+  const { data, error } = await supabase
+    .from('projects')
+    .insert([projectData])
+    .select();
+
+  return { data, error };
+};
+
+// Upload project image from URL to Supabase Storage
+export const uploadProjectImage = async (imageUrl, projectTitle) => {
+  if (!supabase) return { url: null, error: 'Supabase not configured' };
+  
+  try {
+    // Fetch the image from URL
+    const response = await fetch(imageUrl);
+    if (!response.ok) throw new Error('Failed to fetch image');
+    
+    const blob = await response.blob();
+    const fileExt = imageUrl.split('.').pop().split('?')[0] || 'png';
+    const fileName = `${projectTitle.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}.${fileExt}`;
+    const filePath = `projects/${fileName}`;
+    
+    // Upload to storage
+    const { error } = await supabase.storage
+      .from('project-images')
+      .upload(filePath, blob, {
+        cacheControl: '3600',
+        upsert: false
+      });
+    
+    if (error) {
+      console.error('Error uploading project image:', error);
+      return { url: null, error };
+    }
+    
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('project-images')
+      .getPublicUrl(filePath);
+    
+    return { url: publicUrl, error: null };
+  } catch (err) {
+    console.error('Error in uploadProjectImage:', err);
+    return { url: null, error: err.message };
+  }
+};
