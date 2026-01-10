@@ -17,7 +17,8 @@ export const useIntersectionObserver = (options = {}) => {
     root = null 
   } = options;
   
-  const [isVisible, setIsVisible] = useState(false);
+  // Start with true to allow initial render, then let observer take over
+  const [isVisible, setIsVisible] = useState(true);
   const ref = useRef(null);
 
   useEffect(() => {

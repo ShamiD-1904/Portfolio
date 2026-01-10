@@ -1,29 +1,33 @@
-import { useRef } from "react";
+import { useRef, lazy, Suspense } from "react"; // Added lazy, Suspense
 import { words } from "../constants";
 import Button from "../components/Button";
-import HeroExperience from "../components/HeroModels/HeroExperience";
+// REMOVED: import HeroExperience from "../components/HeroModels/HeroExperience";
 import useHeroAnimations from "../animations/useHeroAnimations";
 import useGlitchEffect from "../animations/useGlitchEffect";
 import { useIsMobile } from "../hooks";
 
+// --- STRICT FIX: Dynamic Import ---
+// This splits the heavy 3D component into a separate chunk.
+// It will NOT be downloaded until this line is executed in the render.
+const HeroExperience = lazy(() => import("../components/HeroModels/HeroExperience"));
 
 const Hero = () => {
-  const isMobile = useIsMobile();
-  const slideRef = useRef(); // Container for the sliding word animation
-  const slideItemsRef = useRef([]); // Array of individual sliding word elements
-  const headline1Ref = useRef(); // "Engineering Solutions. Delivering Results."
-  const headline2Ref = useRef(); // The glitching word (Build/Innovate/Deliver)
-  const introRef = useRef(); // "Hey, I'm Shamishka,"
-  const descRef = useRef(); // Role descriptions
+  // Ensure your hook defaults to TRUE (mobile) to be safe, or handles hydration well.
+  const isMobile = useIsMobile(); 
+  
+  const slideRef = useRef();
+  const slideItemsRef = useRef([]);
+  const headline1Ref = useRef();
+  const headline2Ref = useRef();
+  const introRef = useRef();
+  const descRef = useRef();
 
-  // Glitch effect: cycles through words with digital scramble effect
   const currentWord = useGlitchEffect(
-    ["Build", "Innovate", "Deliver"], // Words to cycle
-    2000, // Hold each word for 2 seconds
-    1000 // Glitch transition takes 1s
+    ["Build", "Innovate", "Deliver"],
+    2000,
+    1000
   );
 
-  // Initial page load animations: staggered reveal of all elements
   useHeroAnimations({
     slideRef,
     slideItemsRef,
@@ -34,8 +38,7 @@ const Hero = () => {
   });
 
   return (
-    <section className= {`hero-section ${isMobile ? 'h-auto' : 'min-h-screen'}`} id="hero">
-      {/* Background decoration */}
+    <section className={`hero-section ${isMobile ? 'h-auto' : 'min-h-screen'}`} id="hero">
       <div className="hero-bg-decoration">
         <img src="/images/bg.png" alt="background" />
       </div>
@@ -44,7 +47,6 @@ const Hero = () => {
         {/* LEFT: HERO TEXT CONTENT */}
         <div className="hero-left">
           <div className="hero-content">
-            {/* Sliding words animation */}
             <div className="hero-text text-gray-400">
               <h1>
                 <span className="slide" ref={slideRef}>
@@ -70,13 +72,11 @@ const Hero = () => {
               <br />
               <h1></h1>
 
-              {/* Static headline */}
               <h1 className="hero-headline" ref={headline1Ref}>
                 Engineering Solutions, {<br />}
                 Delivering Results.
               </h1>
 
-              {/* Dynamic glitching word */}
               <h1 className="hero-glitch" ref={headline2Ref}>
                 <span className="glitch-word">{currentWord}</span>
               </h1>
@@ -84,13 +84,11 @@ const Hero = () => {
 
             <div className="hero-divider" />
 
-            {/* Introduction text */}
             <div className="hero-intro" ref={introRef}>
               <span className="intro-greeting font-bold text-gray-300">Hey, I'm</span>
               <span className="intro-name">Shamishka</span>
             </div>
 
-            {/* Description */}
             <div className="hero-description !sm:text-2xl" ref={descRef}>
               <div className="description-text">
                 <span className="description-line">A Computer Engineering undergraduate,</span>
@@ -98,30 +96,22 @@ const Hero = () => {
                 <span className="description-line">AI/ML and Robotics Enthusiast,</span>
               </div>
             </div>
-
-            {/*
-            <div className="hero-cta relative -top-8 left-[20%]">
-              <Button
-                className="cta-button"
-                id="button"
-                text="See my Work"
-              />
-            </div> */}
-            
-             
           </div>
         </div>
 
         {/* RIGHT: 3D MODEL */}
-        { !isMobile &&
-        <div className="hero-right">
-          <div className="hero-3d-wrapper">
-            <HeroExperience />
+        {/* Only render if NOT mobile */}
+        {!isMobile && (
+          <div className="hero-right">
+            <div className="hero-3d-wrapper">
+              {/* Suspense is REQUIRED for lazy loaded components */}
+              <Suspense fallback={<div className="w-full h-full flex items-center justify-center">Loading 3D Experience...</div>}>
+                <HeroExperience />
+              </Suspense>
+            </div>
           </div>
-        </div>
-}
+        )}
       </div>
-
     </section>
   );
 };

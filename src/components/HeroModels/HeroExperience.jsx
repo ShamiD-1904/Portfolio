@@ -1,6 +1,6 @@
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Robot } from "./Robot";
 import HeroLights from "./HeroLights";
 import SpeechBubble from "../SpeechBubble";
@@ -96,25 +96,32 @@ const HeroExperience = () => {
       <Canvas
         camera={{ position: getCameraPosition(), fov: isMobile ? 35 : 30 }}
         frameloop={isVisible ? "always" : "never"}
+        gl={{
+          antialias: true,
+          powerPreference: "high-performance",
+          failIfMajorPerformanceCaveat: false,
+        }}
       >
-        <OrbitControls
-          enablePan={false}
-          enableRotate={!isSmallScreen} // Lock rotation on mobile and tablet
-          enableZoom={!isSmallScreen} // Lock zoom on mobile and tablet
-          maxDistance={20}
-          minDistance={5}
-          minPolarAngle={Math.PI / 5}
-          maxPolarAngle={Math.PI / 2}
-        />
+        <Suspense fallback={null}>
+          <OrbitControls
+            enablePan={false}
+            enableRotate={!isSmallScreen}
+            enableZoom={!isSmallScreen}
+            maxDistance={20}
+            minDistance={5}
+            minPolarAngle={Math.PI / 5}
+            maxPolarAngle={Math.PI / 2}
+          />
 
-        <HeroLights />
+          <HeroLights />
 
-        <group
-          scale={getRobotScale()}
-          position={getRobotPosition()}
-        >
-          <Robot isVisible={isVisible} />
-        </group>
+          <group
+            scale={getRobotScale()}
+            position={getRobotPosition()}
+          >
+            <Robot isVisible={isVisible} />
+          </group>
+        </Suspense>
       </Canvas>
     </div>
   );
