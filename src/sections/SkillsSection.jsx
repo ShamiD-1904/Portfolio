@@ -6,7 +6,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, useGLTF, OrbitControls } from '@react-three/drei';
-import { useIntersectionObserver } from '../hooks';
+import { useIntersectionObserver, useIsMobile } from '../hooks';
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -70,6 +70,31 @@ const TechIconCanvas = memo(({ model, isVisible }) => (
   </Canvas>
 ));
 
+// Static image component for mobile devices
+const TechIconStatic = memo(({ name }) => {
+  // Map to determine the primary image format for each tech
+  const imageFormats = {
+    'React': 'svg',
+    'Python': 'png',
+    'ThreeJs': 'svg',
+    'Git': 'png',
+    'AWS': 'png',
+    'Docker': 'png'
+  };
+  
+  const primaryFormat = imageFormats[name] || 'png';
+  const imagePath = `/images/${name}_mobile.${primaryFormat}`;
+  
+  return (
+    <img 
+      src={imagePath} 
+      alt={`${name} logo`} 
+      className="skill-tech-static-img"
+      loading="lazy"
+    />
+  );
+});
+
 // Memoized ability card
 const AbilityCard = memo(({ imgPath, title, desc, index }) => (
   <div className="ability-card">
@@ -97,6 +122,7 @@ const additionalSkills = ["java",'TypeScript', 'Next.js', 'TailwindCSS', 'Postgr
 const SkillsSection = () => {
   const sectionRef = useRef(null);
   const controlsRef = useRef();
+  const isMobile = useIsMobile();
   
   // Use custom intersection observer hook for tech grid
   const { ref: techGridRef, isVisible: isInView } = useIntersectionObserver({ 
@@ -182,7 +208,11 @@ const SkillsSection = () => {
                 <div key={icon.name} className="skill-tech-card group">
                   <div className="skill-tech-card-inner">
                     <div className="skill-tech-icon-wrapper">
-                      <TechIconCanvas model={icon} isVisible={isInView} />
+                      {isMobile ? (
+                        <TechIconStatic name={icon.name} />
+                      ) : (
+                        <TechIconCanvas model={icon} isVisible={isInView} />
+                      )}
                     </div>
                     <span className="skill-tech-name">{icon.name}</span>
                   </div>
