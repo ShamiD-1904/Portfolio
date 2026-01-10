@@ -9,5 +9,24 @@ export default defineConfig({
   ],
   server: {
     port: 1904
+  },
+  build: {
+    // Enable code splitting
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Separate vendor chunks
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-three': ['three', '@react-three/fiber', '@react-three/drei'],
+          'vendor-gsap': ['gsap'],
+        }
+      }
+    },
+    // Optimize chunk size
+    chunkSizeWarningLimit: 500,
+    // Use esbuild for minification (default, faster)
+    minify: 'esbuild',
+    // Target modern browsers for smaller bundles
+    target: 'es2020'
   }
 })

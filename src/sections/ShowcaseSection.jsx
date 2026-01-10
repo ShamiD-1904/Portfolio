@@ -217,8 +217,9 @@ const ShowcaseSection = () => {
               width: '40px',
               height: '40px',
               border: '3px solid rgba(0, 194, 168, 0.2)',
-              borderTop: '3px solid #00c2a8',
+              borderTopColor: '#00c2a8',
               borderRadius: '50%',
+              willChange: 'transform',
               animation: 'spin 1s linear infinite',
               marginBottom: '1rem'
             }}></div>
@@ -252,7 +253,7 @@ const ShowcaseSection = () => {
           <>
             {/* Unified Project Grid */}
             <div className={`project-grid projects-${visibleProjects.length}`} ref={gridRef}>
-              {visibleProjects.map((project) => (
+              {visibleProjects.map((project, index) => (
                 <div
                   key={project.id}
                   className={`project-card ${project.isFeatured ? 'project-card-featured' : ''}`}
@@ -265,7 +266,14 @@ const ShowcaseSection = () => {
                     </div>
                   )}
                   <div className="card-image-wrapper">
-                    <img src={project.image} alt={project.title} />
+                    <img 
+                      src={project.image} 
+                      alt={project.title}
+                      width={400}
+                      height={300}
+                      loading={index < 2 ? "eager" : "lazy"}
+                      decoding="async"
+                    />
                     <div className="card-overlay">
                       <div className="card-tags">
                         {project.tags.slice(0, 3).map((tag, i) => (

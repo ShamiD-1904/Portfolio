@@ -40,7 +40,7 @@ const Hero = () => {
   return (
     <section className={`hero-section ${isMobile ? 'h-auto' : 'min-h-screen'}`} id="hero">
       <div className="hero-bg-decoration">
-        <img src="/images/bg.png" alt="background" />
+        <img src="/images/bg.png" alt="" loading="lazy" decoding="async" />
       </div>
 
       <div className="hero-container">
@@ -62,6 +62,9 @@ const Hero = () => {
                           src={word.imgPath}
                           alt={word.text2}
                           className="slide-icon"
+                          width={32}
+                          height={32}
+                          loading="eager"
                         />
                         <span>{word.text2}</span>
                       </span>

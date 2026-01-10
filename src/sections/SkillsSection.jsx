@@ -82,15 +82,29 @@ const TechIconStatic = memo(({ name }) => {
     'Docker': 'png'
   };
   
+  // Image dimensions for each tech (actual rendered size)
+  const imageDimensions = {
+    'React': { width: 150, height: 130 },
+    'Python': { width: 150, height: 150 },
+    'ThreeJs': { width: 150, height: 100 },
+    'Git': { width: 150, height: 150 },
+    'AWS': { width: 150, height: 90 },
+    'Docker': { width: 150, height: 108 }
+  };
+  
   const primaryFormat = imageFormats[name] || 'png';
   const imagePath = `/images/${name}_mobile.${primaryFormat}`;
+  const dimensions = imageDimensions[name] || { width: 150, height: 150 };
   
   return (
     <img 
       src={imagePath} 
       alt={`${name} logo`} 
       className="skill-tech-static-img"
+      width={dimensions.width}
+      height={dimensions.height}
       loading="lazy"
+      decoding="async"
     />
   );
 });
@@ -101,7 +115,15 @@ const AbilityCard = memo(({ imgPath, title, desc, index }) => (
     <div className="ability-card-inner">
       <div className="ability-icon-wrapper">
         <div className="ability-icon-glow" />
-        <img src={imgPath} alt={title} className="ability-icon" loading="lazy" />
+        <img 
+          src={imgPath} 
+          alt={title} 
+          className="ability-icon" 
+          width={48}
+          height={48}
+          loading="lazy" 
+          decoding="async"
+        />
       </div>
       <div className="ability-content">
         <h4 className="ability-title">{title}</h4>

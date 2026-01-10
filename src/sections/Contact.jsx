@@ -98,7 +98,13 @@ const Contact = () => {
           <div className="contact-info">
             <div className="info-item">
               <div className="info-icon">
-                <img src="/images/logos/email.svg" alt="Email" 
+                <img 
+                  src="/images/logos/email.svg" 
+                  alt="Email"
+                  width={24}
+                  height={24}
+                  loading="lazy"
+                  decoding="async"
                   onError={(e) => { e.target.style.display = 'none'; }}
                 />
               </div>
@@ -110,7 +116,13 @@ const Contact = () => {
             
             <div className="info-item">
               <div className="info-icon">
-                <img src="/images/logos/location.svg" alt="Location"
+                <img 
+                  src="/images/logos/location.svg" 
+                  alt="Location"
+                  width={24}
+                  height={24}
+                  loading="lazy"
+                  decoding="async"
                   onError={(e) => { e.target.style.display = 'none'; }}
                 />
               </div>

@@ -38,6 +38,10 @@ const TestimonialCard = memo(({ testimonial }) => {
             <img 
               src={imgPath || defaultAvatar} 
               alt={name}
+              width={56}
+              height={56}
+              loading="lazy"
+              decoding="async"
               onError={(e) => {
                 e.target.src = defaultAvatar;
               }}

@@ -90,17 +90,19 @@
   .cta-pulse {
     @apply w-2 h-2 rounded-full;
     background: #22D3EE;
+    /* Use transform/opacity for GPU-accelerated animation */
+    will-change: transform, opacity;
     animation: pulse-glow 2s ease-in-out infinite;
   }
 
   @keyframes pulse-glow {
     0%, 100% {
       opacity: 1;
-      box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.5);
+      transform: scale(1);
     }
     50% {
-      opacity: 0.8;
-      box-shadow: 0 0 10px 4px rgba(34, 211, 238, 0.3);
+      opacity: 0.6;
+      transform: scale(1.3);
     }
   }
 

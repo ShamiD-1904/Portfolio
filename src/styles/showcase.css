@@ -336,8 +336,7 @@
     background: linear-gradient(135deg, rgba(0, 194, 168, 0.22) 0%, rgba(0, 102, 255, 0.22) 100%);
     color: var(--accent-cyan);
     border: 1px solid rgba(0, 194, 168, 0.35);
-    background-size: 200% 100%;
-    animation: badgeShimmer 3.2s linear infinite;
+    /* Remove non-composited animation for performance */
     position: absolute;
     top: 1rem;
     left: 1rem;
@@ -347,16 +346,8 @@
   .project-featured-badge .badge-dot {
     @apply inline-block w-1.5 h-1.5 rounded-full mr-1.5;
     background: var(--accent-cyan);
+    will-change: transform, opacity;
     animation: badgePulse 2s ease-in-out infinite;
-  }
-
-  @keyframes badgeShimmer {
-    0% {
-      background-position: 0% 50%;
-    }
-    100% {
-      background-position: 200% 50%;
-    }
   }
 
   @keyframes badgePulse {
@@ -367,7 +358,7 @@
     }
     50% {
       opacity: 0.6;
-      transform: scale(0.8);
+      transform: scale(1.2);
     }
   }
 
