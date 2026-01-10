@@ -1,17 +1,8 @@
-import { useState, useRef, memo } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { useState, useRef, memo, lazy, Suspense } from "react";
 import { useIntersectionObserver } from "../hooks";
 
-// Placeholder 3D component - replace with actual model later
-const ContactModel = () => {
-  return (
-    <mesh>
-      <boxGeometry args={[2, 2, 2]} />
-      <meshStandardMaterial color="#22D3EE" wireframe />
-    </mesh>
-  );
-};
+// Lazy load the 3D Canvas component
+const ContactCanvas = lazy(() => import("../components/ContactCanvas"));
 
 const Contact = () => {
   const formRef = useRef(null);
@@ -78,20 +69,9 @@ const Contact = () => {
         {/* LEFT: 3D Model */}
         <div className="contact-left">
           <div className="contact-3d-wrapper">
-            <Canvas 
-              camera={{ position: [0, 0, 5], fov: 45 }}
-              frameloop={isVisible ? "always" : "never"}
-            >
-              <ambientLight intensity={0.5} />
-              <directionalLight position={[10, 10, 5]} intensity={1} />
-              <ContactModel />
-              <OrbitControls 
-                enableZoom={false} 
-                enablePan={false}
-                autoRotate={isVisible}
-                autoRotateSpeed={2}
-              />
-            </Canvas>
+            <Suspense fallback={<div className="w-full h-full bg-gray-900/50 rounded-xl" />}>
+              <ContactCanvas isVisible={isVisible} />
+            </Suspense>
           </div>
           
           {/* Contact Info */}

@@ -1,74 +1,15 @@
-import { useRef, memo, Suspense, useMemo, useEffect } from 'react';
+import { useRef, memo, Suspense, lazy } from 'react';
 import TitleHeader from '../components/TitleHeader';
 import { abilities, techStackIcons } from '../constants';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, useGLTF, OrbitControls } from '@react-three/drei';
 import { useIntersectionObserver, useIsMobile } from '../hooks';
-
-
+import { useEffect } from 'react';
 gsap.registerPlugin(ScrollTrigger);
 
-// Preload all models
-techStackIcons.forEach((icon) => useGLTF.preload(icon.modelPath));
-
-// Single 3D model component with controlled animation
-const TechModel = memo(({ model, isVisible }) => {
-  const { scene } = useGLTF(model.modelPath);
-  const clonedScene = useMemo(() => scene.clone(), [scene]);
-
-  const position = model.position ?? [0, 0, 0];
-
-  return (
-    <Float
-      speed={isVisible ? 4 : 0}
-      rotationIntensity={isVisible ? 0.4 : 0}
-      floatIntensity={isVisible ? 0.6 : 0}
-    >
-      <group
-        scale={model.scale}
-        rotation={model.rotation}
-        position={position}
-      >
-        <primitive object={clonedScene} />
-      </group>
-    </Float>
-  );
-});
-
-// Component to invalidate frame when visible
-const FrameInvalidator = ({ isVisible }) => {
-  useFrame(({ invalidate }) => {
-    if (isVisible) {
-      invalidate();
-    }
-  });
-  return null;
-};
-
-// Lightweight Canvas wrapper for each tech card
-const TechIconCanvas = memo(({ model, isVisible }) => (
-  <Canvas
-    frameloop="demand"
-    dpr={[1, 1.5]}
-    gl={{ antialias: false, powerPreference: 'high-performance' }}
-    camera={{ position: [0, 0, 5], fov: 60 }}
-  >
-    <ambientLight intensity={0.5} />
-    <directionalLight position={[5, 5, 5]} intensity={0.8} />
-    <Suspense fallback={null}>
-      <TechModel model={model} isVisible={isVisible} />
-      <FrameInvalidator isVisible={isVisible} />
-    </Suspense>
-    <OrbitControls
-      target={[0, 0, 0]}  // x,y,z = orbit center
-      enableZoom={false}
-      enablePan={true}
-    />
-  </Canvas>
-));
+// Lazy load the 3D Canvas component - this splits Three.js into a separate chunk
+const TechIconCanvas = lazy(() => import('../components/TechIconCanvas'));
 
 // Static image component for mobile devices
 const TechIconStatic = memo(({ name }) => {
@@ -233,7 +174,9 @@ const SkillsSection = () => {
                       {isMobile ? (
                         <TechIconStatic name={icon.name} />
                       ) : (
-                        <TechIconCanvas model={icon} isVisible={isInView} />
+                        <Suspense fallback={<TechIconStatic name={icon.name} />}>
+                          <TechIconCanvas model={icon} isVisible={isInView} />
+                        </Suspense>
                       )}
                     </div>
                     <span className="skill-tech-name">{icon.name}</span>
