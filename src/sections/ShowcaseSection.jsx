@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -7,15 +7,52 @@ import { projectsData } from "../constants";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Category filter options
+const CATEGORIES = [
+  { id: "all", label: "All Projects", icon: "🚀" },
+  { id: "web", label: "Web Development", icon: "🌐" },
+  { id: "ai", label: "AI / ML", icon: "🤖" },
+];
+
 const ShowcaseSection = () => {
   const sectionRef = useRef(null);
   const gridRef = useRef(null);
   const [selectedProject, setSelectedProject] = useState(null);
   const [showAll, setShowAll] = useState(false);
+  const [activeCategory, setActiveCategory] = useState("all");
   const INITIAL_DISPLAY_COUNT = 5;
 
-  const visibleProjects = showAll ? projectsData : projectsData.slice(0, INITIAL_DISPLAY_COUNT);
-  const hasMoreProjects = projectsData.length > INITIAL_DISPLAY_COUNT;
+  // Filter projects based on active category
+  const filteredProjects = useMemo(() => {
+    if (activeCategory === "all") return projectsData;
+    return projectsData.filter((project) => project.type === activeCategory);
+  }, [activeCategory]);
+
+  const visibleProjects = showAll ? filteredProjects : filteredProjects.slice(0, INITIAL_DISPLAY_COUNT);
+  const hasMoreProjects = filteredProjects.length > INITIAL_DISPLAY_COUNT;
+
+  // Handle category change with animation
+  const handleCategoryChange = (categoryId) => {
+    if (categoryId === activeCategory) return;
+    
+    // Animate out current cards
+    const cards = gridRef.current?.querySelectorAll('.project-card');
+    if (cards && cards.length > 0) {
+      gsap.to(cards, {
+        opacity: 0,
+        y: 20,
+        duration: 0.2,
+        stagger: 0.03,
+        onComplete: () => {
+          setActiveCategory(categoryId);
+          setShowAll(false);
+        }
+      });
+    } else {
+      setActiveCategory(categoryId);
+      setShowAll(false);
+    }
+  };
 
   useGSAP(() => {
     gsap.fromTo(
@@ -24,27 +61,22 @@ const ShowcaseSection = () => {
       { opacity: 1, duration: 1.5 }
     );
 
-    // Animate project cards
+    // Animate project cards on category change or initial load
     const cards = gridRef.current?.querySelectorAll('.project-card');
     if (cards) {
-      cards.forEach((card, index) => {
-        gsap.fromTo(
-          card,
-          { y: 50, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            delay: 0.15 * index,
-            scrollTrigger: {
-              trigger: card,
-              start: "top bottom-=50",
-            },
-          }
-        );
-      });
+      gsap.fromTo(
+        cards,
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.5,
+          stagger: 0.08,
+          ease: "power2.out",
+        }
+      );
     }
-  }, [showAll]);
+  }, [activeCategory, showAll]);
 
   const openProjectModal = (project) => {
     setSelectedProject(project);
@@ -82,12 +114,29 @@ const ShowcaseSection = () => {
           <p className="showcase-subtitle">
             Explore a curated collection of projects that showcase innovation, creativity, and technical excellence
           </p>
+
+          
         </div>
 
         {/* Counter */}
         <div className="showcase-counter">
           <AnimatedCounter />
         </div>
+
+        {/* Category Filter Tabs */}
+          <div className="category-tabs">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat.id}
+                className={`category-tab ${activeCategory === cat.id ? 'active' : ''}`}
+                onClick={() => handleCategoryChange(cat.id)}
+              >
+                <span className="tab-icon">{cat.icon}</span>
+                <span className="tab-label">{cat.label}</span>
+                {activeCategory === cat.id && <span className="tab-indicator" />}
+              </button>
+            ))}
+          </div>
 
         {/* Unified Project Grid */}
         <div className={`project-grid projects-${visibleProjects.length}`} ref={gridRef}>

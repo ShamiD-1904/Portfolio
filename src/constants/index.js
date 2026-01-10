@@ -279,6 +279,7 @@ const projectsData = [
   {
     id: 1,
     title: "NexCare",
+    type: "web",
     category: "Healthcare",
     year: "2024",
     image: "/images/project1.png",
@@ -292,6 +293,7 @@ const projectsData = [
   {
     id: 2,
     title: "Library Management",
+    type: "web",
     category: "Education",
     year: "2023",
     image: "/images/project2.png",
@@ -305,6 +307,7 @@ const projectsData = [
   {
     id: 3,
     title: "YC Directory",
+    type: "web",
     category: "Web App",
     year: "2024",
     image: "/images/project3.png",
@@ -318,6 +321,7 @@ const projectsData = [
   {
     id: 4,
     title: "Apple Clone",
+    type: "ai",
     category: "Learning",
     year: "2024",
     image: "/images/project1.png",
@@ -331,6 +335,7 @@ const projectsData = [
   {
     id: 5,
     title: "Project 5 Placeholder",
+    type: "ai",
     category: "Category",
     year: "2024",
     image: "/images/project2.png",
@@ -344,6 +349,7 @@ const projectsData = [
   {
     id: 6,
     title: "Project 6 Placeholder",
+    type: "web",
     category: "Category",
     year: "2024",
     image: "/images/project3.png",

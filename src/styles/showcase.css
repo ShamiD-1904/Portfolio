@@ -122,6 +122,73 @@
     line-height: 1.6;
   }
 
+  /* Category Filter Tabs */
+  .category-tabs {
+    @apply flex flex-wrap items-center justify-center gap-3 mt-10 mb-10;
+  }
+
+  .category-tab {
+    @apply relative flex items-center gap-2 px-5 py-2.5 rounded-full font-medium text-sm md:text-base;
+    background: rgba(15, 15, 30, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+
+  .category-tab:hover {
+    border-color: rgba(0, 194, 168, 0.3);
+    color: var(--text-primary);
+    background: rgba(0, 194, 168, 0.08);
+  }
+
+  .category-tab.active {
+    background: linear-gradient(135deg, rgba(0, 194, 168, 0.2) 0%, rgba(139, 92, 246, 0.15) 100%);
+    border-color: rgba(0, 194, 168, 0.5);
+    color: var(--accent-cyan);
+    box-shadow: 0 4px 20px rgba(0, 194, 168, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .tab-icon {
+    font-size: 1.1em;
+  }
+
+  .tab-label {
+    position: relative;
+    z-index: 1;
+  }
+
+  .tab-indicator {
+    @apply absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full;
+    background: var(--accent-cyan);
+    animation: tabIndicatorIn 0.3s ease forwards;
+  }
+
+  @keyframes tabIndicatorIn {
+    from {
+      width: 0;
+      opacity: 0;
+    }
+    to {
+      width: 2rem;
+      opacity: 1;
+    }
+  }
+
+  /* Empty state when no projects match filter */
+  .no-projects {
+    @apply flex flex-col items-center justify-center py-20 text-center;
+  }
+
+  .no-projects-icon {
+    @apply text-6xl mb-4 opacity-50;
+  }
+
+  .no-projects-text {
+    @apply text-lg text-white-50;
+  }
+
   .showcase-counter {
     @apply mb-16 md:mb-20;
   }
