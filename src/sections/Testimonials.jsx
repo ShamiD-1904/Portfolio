@@ -8,26 +8,41 @@ import { fetchTestimonials, addTestimonial, supabase } from '../lib/supabase';
 const INITIAL_VISIBLE_COUNT = 6;
 const SHOW_MORE_STEP = 4;
 
-// Helper function to get optimized image URL
+// --- STRICT FIX: Image Optimization Logic ---
 const getOptimizedImageUrl = (imgPath) => {
-  if (!imgPath || !supabase) return imgPath;
+  if (!imgPath) return null; // Or return a default placeholder path like '/images/user-placeholder.webp'
   
-  // If it's already a full URL, return as is
-  if (imgPath.startsWith('http')) return imgPath;
+  // 1. Handle Full URLs (The logic bug is fixed here)
+  if (imgPath.startsWith('http')) {
+    // If it is a Supabase URL, we FORCE the transformation params
+    if (imgPath.includes('supabase.co')) {
+      // If it already has params (?), return as is to avoid breaking it
+      if (imgPath.includes('?')) return imgPath;
+      
+      // Append the transformation query string manually
+      return `${imgPath}?width=100&height=100&resize=cover&format=webp&quality=80`;
+    }
+    // If it's an external URL (e.g. Google Auth avatar), return as is
+    return imgPath;
+  }
   
-  // Get the public URL from Supabase Storage
-  const { data } = supabase.storage
-    .from('testimonial-images')
-    .getPublicUrl(imgPath, {
-      transform: {
-        width: 100,
-        height: 100,
-        format: 'webp',
-        quality: 80
-      }
-    });
+  // 2. Handle Relative Paths (e.g. "avatars/filename.jpg")
+  if (supabase) {
+    const { data } = supabase.storage
+      .from('testimonial-images')
+      .getPublicUrl(imgPath, {
+        transform: {
+          width: 100,   // Resize to avatar size
+          height: 100,  // Resize to avatar size
+          resize: 'cover', // Smart crop
+          format: 'webp',
+          quality: 80
+        }
+      });
+    return data?.publicUrl || imgPath;
+  }
   
-  return data?.publicUrl || imgPath;
+  return imgPath;
 };
 
 const Testimonials = () => {
@@ -44,15 +59,16 @@ const Testimonials = () => {
         
         if (error) {
           console.error('Error fetching testimonials:', error);
-          setTestimonials([]);
+          setTestimonials([]); // Use empty array on error
         } else if (data && data.length > 0) {
-          // Transform Supabase data to match our component format
+          // Transform Supabase data
           const formattedData = data.map(item => ({
             id: item.id,
             name: item.name,
             mentions: item.mentions || '',
             review: item.review,
-            imgPath: getOptimizedImageUrl(item.img_path), // Apply WebP optimization
+            // Apply the STRICT optimization fix here
+            imgPath: getOptimizedImageUrl(item.img_path), 
             isHighlighted: !!item.is_highlighted,
             createdAt: item.created_at,
           }));
@@ -69,9 +85,9 @@ const Testimonials = () => {
     loadTestimonials();
   }, []);
 
-  useEffect(() => {
-    setVisibleCount(INITIAL_VISIBLE_COUNT);
-  }, [testimonials.length]);
+  // --- STRICT FIX: UX Improvement ---
+  // I removed the useEffect that reset visibleCount on [testimonials.length].
+  // This prevents the list from snapping back to 6 items if data updates.
 
   // Handle new testimonial submission
   const handleAddTestimonial = async (newTestimonial) => {
@@ -83,11 +99,9 @@ const Testimonials = () => {
         setSubmitStatus('error');
       } else {
         setSubmitStatus('success');
-        // Show success message briefly
         setTimeout(() => setSubmitStatus(null), 5000);
       }
     } else {
-      // Fallback: just log it
       console.log('Testimonial submitted (no Supabase):', newTestimonial);
       setSubmitStatus('success');
       setTimeout(() => setSubmitStatus(null), 5000);
@@ -133,14 +147,12 @@ const Testimonials = () => {
     <section id="testimonials" className="testimonials-section">
       <div className="testimonials-container">
         {/* Header */}
-        
         <div className="showcase-header">
           <div className="showcase-badge">
             <span className="badge-dot"></span>
             <span>Client Feedback</span>
           </div>
         </div>
-                
 
         {/* Spotlight + Grid */}
         <div className="testimonials-spotlight">
