@@ -10,9 +10,9 @@ gsap.registerPlugin(ScrollTrigger);
 
 // Category filter options
 const CATEGORIES = [
-  { id: "all", label: "All Projects", icon: "🚀" },
-  { id: "web", label: "Web Development", icon: "🌐" },
-  { id: "ai", label: "AI / ML", icon: "🤖" },
+  { id: "all", label: "All Projects", icon: "" },
+  { id: "web", label: "Web Development", icon: "" },
+  { id: "ai", label: "AI / ML", icon: "" },
 ];
 
 const ShowcaseSection = () => {

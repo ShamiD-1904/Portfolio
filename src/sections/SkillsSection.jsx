@@ -100,6 +100,10 @@ const SkillsSection = () => {
   }, []);
 
   useGSAP(() => {
+    // Wait for element to be available before creating ScrollTrigger
+    const skillsElement = document.querySelector('#skills');
+    if (!skillsElement) return;
+
     const ctx = gsap.context(() => {
       gsap.fromTo(
         '.ability-card',
@@ -111,7 +115,7 @@ const SkillsSection = () => {
           ease: 'power2.out',
           stagger: 0.15,
           scrollTrigger: {
-            trigger: '#skills',
+            trigger: skillsElement,
             start: 'top 80%',
           },
         }

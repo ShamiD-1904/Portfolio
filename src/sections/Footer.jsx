@@ -149,7 +149,22 @@ const isMobile = useIsMobile();
           </div>
 
           <div className="footer-copyright">
-            <span>© {currentYear} Shamishka Darshana. All rights reserved.</span>
+            <span>© {currentYear} Shamishka Darshana. All rights reserved.<br/>
+            <div className="footer-credits">
+            <span className="credits-label">3D Model:</span>
+            <a href="https://sketchfab.com/3d-models/robot-character-0eff23412e48470bae690d87bd1726f8" target="_blank" rel="noopener noreferrer" className="credits-link">
+              Robot Model
+            </a>
+            <span className="credits-text">by</span>
+            <a href="https://sketchfab.com/stylo0" target="_blank" rel="noopener noreferrer" className="credits-link">
+              styloo
+            </a>
+            <span className="credits-text">—</span>
+            <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" className="credits-link">
+              CC-BY 4.0
+            </a>
+          </div>
+            </span>
           </div>
           
 

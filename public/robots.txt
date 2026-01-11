@@ -1,0 +1,13 @@
+# Robots.txt for Shamishka Darshana Portfolio
+# https://shamid.me
+
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://shamid.me/sitemap.xml
+
+# Disallow admin or private paths (if any in future)
+# Disallow: /admin/
+# Disallow: /private/

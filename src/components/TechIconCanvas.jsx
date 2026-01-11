@@ -43,6 +43,9 @@ const TechIconCanvas = memo(({ model, isVisible }) => (
     dpr={[1, 1.5]}
     gl={{ antialias: false, powerPreference: 'high-performance' }}
     camera={{ position: [0, 0, 5], fov: 60 }}
+    onCreated={({ gl }) => {
+      gl.domElement.addEventListener('webglcontextlost', (e) => e.preventDefault(), false);
+    }}
   >
     <ambientLight intensity={0.5} />
     <directionalLight position={[5, 5, 5]} intensity={0.8} />

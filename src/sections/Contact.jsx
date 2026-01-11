@@ -1,15 +1,18 @@
 import { useState, useRef, memo, lazy, Suspense } from "react";
 import { useIntersectionObserver } from "../hooks";
 import { sendEmail } from "../lib/emailService";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 // Lazy load the 3D Canvas component
 const ContactCanvas = lazy(() => import("../components/ContactCanvas"));
 
 const Contact = () => {
   const formRef = useRef(null);
+  const turnstileRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState(null);
   
   // Use custom intersection observer hook
   const { ref: sectionRef, isVisible } = useIntersectionObserver({ threshold: 0.1 });
@@ -50,19 +53,34 @@ const Contact = () => {
       return;
     }
 
+    // Turnstile CAPTCHA validation
+    if (!turnstileToken) {
+      setError("Please complete the security verification.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const result = await sendEmail(formData);
       
       if (result.success) {
         setSuccess(true);
         setFormData({ name: "", email: "", subject: "", message: "" });
+        setTurnstileToken(null);
+        // Reset Turnstile for next submission
+        turnstileRef.current?.reset();
         // Auto-hide success message after 5 seconds
         setTimeout(() => setSuccess(false), 5000);
       } else {
         setError(result.error || "Failed to send message. Please try again.");
+        // Reset Turnstile on error to allow retry
+        turnstileRef.current?.reset();
+        setTurnstileToken(null);
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
+      turnstileRef.current?.reset();
+      setTurnstileToken(null);
     } finally {
       setLoading(false);
     }
@@ -197,6 +215,26 @@ const Contact = () => {
                 className="form-textarea"
                 rows={5}
                 required
+              />
+            </div>
+
+            {/* Cloudflare Turnstile CAPTCHA - Invisible/Managed mode */}
+            <div className="turnstile-wrapper">
+              <Turnstile
+                ref={turnstileRef}
+                siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"}
+                onSuccess={(token) => setTurnstileToken(token)}
+                onError={() => {
+                  setTurnstileToken(null);
+                  setError("Security verification failed. Please try again.");
+                }}
+                onExpire={() => {
+                  setTurnstileToken(null);
+                }}
+                options={{
+                  theme: "dark",
+                  size: "flexible",
+                }}
               />
             </div>
 

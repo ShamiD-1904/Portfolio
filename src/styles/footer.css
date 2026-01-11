@@ -273,8 +273,27 @@
   }
 
   .footer-credits {
-    @apply flex items-center gap-1.5 text-xs;
-    color: #c1c6cb;
+    @apply flex items-center gap-1.5 flex-wrap text-xs;
+    color: #94A3B8;
+  }
+
+  .credits-label {
+    @apply font-medium;
+    color: #CBD5E1;
+  }
+
+  .credits-text {
+    @apply text-xs;
+    color: #64748B;
+  }
+
+  .credits-link {
+    @apply hover:underline transition-colors;
+    color: #22D3EE;
+  }
+
+  .credits-link:hover {
+    color: #06B6D4;
   }
 
 

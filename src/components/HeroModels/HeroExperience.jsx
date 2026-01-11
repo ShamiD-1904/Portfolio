@@ -101,6 +101,11 @@ const HeroExperience = () => {
           powerPreference: "high-performance",
           failIfMajorPerformanceCaveat: false,
         }}
+        onCreated={({ gl }) => {
+          gl.domElement.addEventListener('webglcontextlost', (e) => {
+            e.preventDefault();
+          }, false);
+        }}
       >
         <Suspense fallback={null}>
           <OrbitControls

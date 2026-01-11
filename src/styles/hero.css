@@ -56,7 +56,7 @@
 
     .slide {
       @apply absolute overflow-hidden;
-      @apply h-6 sm:h-7 md:h-14;
+      @apply h-6 2xl:h-12 sm:h-7 md:h-14;
       @apply py-0;
       font-weight: 400;
       letter-spacing: 0.02em;

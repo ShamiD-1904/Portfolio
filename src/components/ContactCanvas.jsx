@@ -17,6 +17,9 @@ const ContactCanvas = memo(({ isVisible }) => (
     camera={{ position: [0, 0, 5], fov: 50 }}
     frameloop={isVisible ? "always" : "never"}
     gl={{ antialias: false, powerPreference: 'high-performance' }}
+    onCreated={({ gl }) => {
+      gl.domElement.addEventListener('webglcontextlost', (e) => e.preventDefault(), false);
+    }}
   >
     <ambientLight intensity={0.5} />
     <directionalLight position={[5, 5, 5]} intensity={1} />

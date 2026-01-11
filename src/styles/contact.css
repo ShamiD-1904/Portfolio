@@ -176,6 +176,16 @@
     font-size: 0.875rem;
   }
 
+  /* Turnstile CAPTCHA Wrapper */
+  .turnstile-wrapper {
+    @apply flex justify-start mt-2 mb-2;
+    min-height: 65px;
+  }
+
+  .turnstile-wrapper iframe {
+    border-radius: 8px !important;
+  }
+
   /* Submit Button */
   .submit-btn {
     @apply flex items-center justify-center gap-2 px-8 py-4 mt-2;
