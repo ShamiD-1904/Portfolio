@@ -99,19 +99,20 @@ export const addTestimonial = async (testimonial) => {
   
   return { data, error };
 };
-// Fetch all projects
+// Fetch all projects (only visible ones)
 export const fetchProjects = async () => {
   if (!supabase) return { data: null, error: 'Supabase not configured' };
   
   const { data, error } = await supabase
     .from('projects')
     .select('*')
+    .eq('is_visible', true)
     .order('created_at', { ascending: false });
 
   return { data, error };
 };
 
-// Fetch projects by type (web or ai)
+// Fetch projects by type (web or ai) - only visible ones
 export const fetchProjectsByType = async (type) => {
   if (!supabase) return { data: null, error: 'Supabase not configured' };
   
@@ -119,6 +120,7 @@ export const fetchProjectsByType = async (type) => {
     .from('projects')
     .select('*')
     .eq('type', type)
+    .eq('is_visible', true)
     .order('created_at', { ascending: false });
 
   return { data, error };

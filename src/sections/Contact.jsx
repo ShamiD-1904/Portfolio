@@ -1,5 +1,6 @@
 import { useState, useRef, memo, lazy, Suspense } from "react";
 import { useIntersectionObserver } from "../hooks";
+import { sendEmail } from "../lib/emailService";
 
 // Lazy load the 3D Canvas component
 const ContactCanvas = lazy(() => import("../components/ContactCanvas"));
@@ -50,14 +51,18 @@ const Contact = () => {
     }
 
     try {
-      // TODO: Replace with your email service (EmailJS, Formspree, etc.)
-      // For now, simulate a submission
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const result = await sendEmail(formData);
       
-      setSuccess(true);
-      setFormData({ name: "", email: "", subject: "", message: "" });
+      if (result.success) {
+        setSuccess(true);
+        setFormData({ name: "", email: "", subject: "", message: "" });
+        // Auto-hide success message after 5 seconds
+        setTimeout(() => setSuccess(false), 5000);
+      } else {
+        setError(result.error || "Failed to send message. Please try again.");
+      }
     } catch (err) {
-      setError("Failed to send message. Please try again.");
+      setError("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
     }

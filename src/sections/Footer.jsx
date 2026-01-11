@@ -151,6 +151,7 @@ const isMobile = useIsMobile();
           <div className="footer-copyright">
             <span>© {currentYear} Shamishka Darshana. All rights reserved.</span>
           </div>
+          
 
           
         </div>

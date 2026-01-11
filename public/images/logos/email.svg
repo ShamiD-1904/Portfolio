@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <!-- Paper airplane - clean and bold -->
+  <path d="M6 24L20 28L24 42L42 6L6 24Z" fill="#8b5cf6"/>
+  <path d="M20 28L24 42L27 27L42 6L20 28Z" fill="#6366f1"/>
+  <path d="M20 28L42 6L27 27L20 28Z" fill="#c4b5fd"/>
+  
+  <!-- Speed lines -->
+  <line x1="4" y1="18" x2="12" y2="20" stroke="#a78bfa" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="2" y1="26" x2="9" y2="27" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/>
+  <line x1="5" y1="33" x2="11" y2="33" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
