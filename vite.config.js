@@ -8,9 +8,11 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
-    port: 1904
+    port: 1904,
+    sourcemap: true
   },
   build: {
+    sourcemap: true,
     // Enable code splitting
     rollupOptions: {
       output: {
