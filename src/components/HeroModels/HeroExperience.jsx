@@ -18,16 +18,13 @@ const HeroExperience = () => {
   const isSmallScreen = isMobile || isTablet || isSmallMonitor; // For hiding speech bubbles and locking controls
   const [showAttackBubble, setShowAttackBubble] = useState(false);
   
-  // Use custom intersection observer hook
   const { ref: containerRef, isVisible } = useIntersectionObserver({ threshold: 0.1 });
 
-  // Listen for click events to trigger attack bubble (only on larger screens)
   useEffect(() => {
-    if (isSmallScreen) return; // Don't add click listener on small screens
+    if (isSmallScreen) return;
     
     const handleClick = () => {
       setShowAttackBubble(true);
-      // Hide after 2 seconds
       setTimeout(() => setShowAttackBubble(false), 2000);
     };
 
@@ -35,7 +32,6 @@ const HeroExperience = () => {
     return () => window.removeEventListener("click", handleClick);
   }, [isSmallScreen]);
 
-  // Camera and robot positioning based on screen size
   const getCameraPosition = () => {
     if (isMobile) return [-6, 0, 4]; // Front view for mobile
     if (isTablet) return [-6, 0, 4]; // Front view for tablet

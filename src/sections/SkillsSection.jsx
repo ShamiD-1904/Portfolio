@@ -8,12 +8,9 @@ import { useIntersectionObserver, useIsMobile } from '../hooks';
 import { useEffect } from 'react';
 gsap.registerPlugin(ScrollTrigger);
 
-// Lazy load the 3D Canvas component - this splits Three.js into a separate chunk
 const TechIconCanvas = lazy(() => import('../components/TechIconCanvas'));
 
-// Static image component for mobile devices
 const TechIconStatic = memo(({ name }) => {
-  // Map to determine the primary image format for each tech
   const imageFormats = {
     'React': 'svg',
     'Python': 'png',
@@ -23,7 +20,6 @@ const TechIconStatic = memo(({ name }) => {
     'Docker': 'png'
   };
   
-  // Image dimensions for each tech (actual rendered size)
   const imageDimensions = {
     'React': { width: 150, height: 130 },
     'Python': { width: 150, height: 150 },
@@ -50,7 +46,6 @@ const TechIconStatic = memo(({ name }) => {
   );
 });
 
-// Memoized ability card
 const AbilityCard = memo(({ imgPath, title, desc, index }) => (
   <div className="ability-card">
     <div className="ability-card-inner">
@@ -75,7 +70,6 @@ const AbilityCard = memo(({ imgPath, title, desc, index }) => (
   </div>
 ));
 
-// Memoized skill tag
 const SkillTag = memo(({ skill }) => (
   <span className="skill-tag">{skill}</span>
 ));
@@ -87,7 +81,6 @@ const SkillsSection = () => {
   const controlsRef = useRef();
   const isMobile = useIsMobile();
   
-  // Use custom intersection observer hook for tech grid
   const { ref: techGridRef, isVisible: isInView } = useIntersectionObserver({ 
     threshold: 0.1, 
     rootMargin: '50px' 
@@ -100,7 +93,6 @@ const SkillsSection = () => {
   }, []);
 
   useGSAP(() => {
-    // Wait for element to be available before creating ScrollTrigger
     const skillsElement = document.querySelector('#skills');
     if (!skillsElement) return;
 

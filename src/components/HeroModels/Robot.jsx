@@ -17,7 +17,6 @@ export function Robot({ isVisible = true, ...props }) {
   const { nodes, materials, animations } = useGLTF('models/robot2.glb')
   const { actions, names } = useAnimations(animations, group)
   
-  // State refs for click handler (avoids stale closures)
   const isIdleRef = useRef(false)
   const isAttackingRef = useRef(false)
   const idleActionRef = useRef(null)
@@ -27,7 +26,6 @@ export function Robot({ isVisible = true, ...props }) {
   const wasVisibleRef = useRef(true)
   const hasPlayedInitialSequence = useRef(false)
 
-  // Animation finder helper
   const findAnimation = useCallback((searchTerms) => {
     if (!names) return null
     return names.find(name => 
@@ -35,16 +33,13 @@ export function Robot({ isVisible = true, ...props }) {
     )
   }, [names])
 
-  // Play wave animation when returning to viewport
   const playWaveAnimation = useCallback(() => {
     if (!helloActionRef.current || !idleActionRef.current) return;
     if (isAttackingRef.current) return;
     
-    // Fade out current idle, play hello
     idleActionRef.current.fadeOut(0.3);
     helloActionRef.current.reset().setLoop(false, 1).fadeIn(0.3).play();
     
-    // Return to idle after wave
     const duration = helloActionRef.current.getClip().duration;
     setTimeout(() => {
       helloActionRef.current.fadeOut(0.3);
@@ -52,7 +47,6 @@ export function Robot({ isVisible = true, ...props }) {
     }, duration * 1000);
   }, []);
 
-  // Pause/resume animations based on visibility & wave on return
   useEffect(() => {
     if (!actions) return;
     
@@ -62,7 +56,6 @@ export function Robot({ isVisible = true, ...props }) {
       }
     });
 
-    // Wave when coming back into view (after initial sequence played)
     if (isVisible && !wasVisibleRef.current && hasPlayedInitialSequence.current) {
       playWaveAnimation();
     }
@@ -70,7 +63,6 @@ export function Robot({ isVisible = true, ...props }) {
     wasVisibleRef.current = isVisible;
   }, [isVisible, actions, playWaveAnimation]);
 
-  // Mouse position tracking
   useEffect(() => {
     const handleMouseMove = (e) => {
       mousePosition.current = {
@@ -82,7 +74,6 @@ export function Robot({ isVisible = true, ...props }) {
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
-  // Find head bone for cursor tracking
   useEffect(() => {
     if (nodes.GLTF_created_0_rootJoint) {
       nodes.GLTF_created_0_rootJoint.traverse((child) => {
@@ -93,9 +84,8 @@ export function Robot({ isVisible = true, ...props }) {
     }
   }, [nodes])
 
-  // Head follows cursor (only when idle and visible)
   useFrame(() => {
-    if (!isVisible) return; // Skip frame updates when not visible
+    if (!isVisible) return;
     if (headRef.current && isIdleRef.current) {
       const targetY = mousePosition.current.x * 0.5
       const targetX = mousePosition.current.y * 0.3
@@ -104,20 +94,17 @@ export function Robot({ isVisible = true, ...props }) {
     }
   })
 
-  // Click handler for attack animation
   const handleClick = useCallback(() => {
-    if (!isVisible) return; // Don't respond to clicks when not visible
+    if (!isVisible) return;
     if (!isIdleRef.current || isAttackingRef.current) return
     if (!idleActionRef.current || !attackActionRef.current) return
 
     isAttackingRef.current = true
     
-    // Play attack animation
     idleActionRef.current.fadeOut(0.3)
     attackActionRef.current.setEffectiveTimeScale(0.5)
     attackActionRef.current.reset().setLoop(false, 1).fadeIn(0.3).play()
 
-    // Return to idle after attack
     const duration = attackActionRef.current.getClip().duration * 2
     setTimeout(() => {
       attackActionRef.current.fadeOut(0.3)
@@ -126,17 +113,14 @@ export function Robot({ isVisible = true, ...props }) {
     }, duration * 1000)
   }, [])
 
-  // Global click listener
   useEffect(() => {
     window.addEventListener('click', handleClick)
     return () => window.removeEventListener('click', handleClick)
   }, [handleClick])
 
-  // Animation sequence: walk -> hello -> jump -> attackminiguns -> attackspin -> idle
   useEffect(() => {
     if (!actions || !names || names.length === 0) return
 
-    // Find all animations
     const animationNames = {
       walk: findAnimation(['walk', 'run']),
       hello: findAnimation(['hello', 'wave']),
@@ -147,7 +131,6 @@ export function Robot({ isVisible = true, ...props }) {
       attackOnClick: findAnimation(['attackwithminigun', 'attackminiguns'])
     }
 
-    // Store actions for click handler and wave
     if (animationNames.idle && actions[animationNames.idle]) {
       idleActionRef.current = actions[animationNames.idle]
     }
@@ -158,7 +141,6 @@ export function Robot({ isVisible = true, ...props }) {
       helloActionRef.current = actions[animationNames.hello]
     }
 
-    // Build animation sequence
     const sequence = ['walk', 'hello', 'jump', 'attackMinigun', 'attackSpin']
       .map(key => animationNames[key])
       .filter(name => name && actions[name])
@@ -170,13 +152,12 @@ export function Robot({ isVisible = true, ...props }) {
     let timeout = null
 
     const playNext = () => {
-      // Sequence complete - transition to idle
       if (currentIndex >= sequence.length) {
         if (idleActionRef.current) {
           sequence[sequence.length - 1]?.action.fadeOut(0.5)
           idleActionRef.current.reset().setLoop(true).fadeIn(0.5).play()
           isIdleRef.current = true
-          hasPlayedInitialSequence.current = true // Mark sequence as complete
+          hasPlayedInitialSequence.current = true
         }
         return
       }
@@ -184,15 +165,12 @@ export function Robot({ isVisible = true, ...props }) {
       const current = sequence[currentIndex]
       const previous = currentIndex > 0 ? sequence[currentIndex - 1] : null
 
-      // Fade out previous
       if (previous) previous.action.fadeOut(0.5)
 
-      // Play current (slow down attack animations)
       const isAttack = current.name.toLowerCase().includes('attack')
       if (isAttack) current.action.setEffectiveTimeScale(0.5)
       current.action.reset().setLoop(false, 1).fadeIn(0.5).play()
 
-      // Schedule next
       let duration = current.action.getClip().duration
       if (isAttack) duration *= 2
       currentIndex++

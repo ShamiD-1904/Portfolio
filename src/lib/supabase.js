@@ -11,7 +11,6 @@ export const supabase = supabaseUrl && supabaseAnonKey
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
-// Fetch all approved testimonials
 export const fetchTestimonials = async () => {
   if (!supabase) return { data: null, error: 'Supabase not configured' };
   
@@ -34,11 +33,9 @@ export const fetchTestimonials = async () => {
   return { data, error };
 };
 
-// Upload image to Supabase Storage
 export const uploadImage = async (file) => {
   if (!supabase || !file) return { url: null, error: null };
   
-  // Generate unique filename
   const fileExt = file.name.split('.').pop();
   const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
   const filePath = `avatars/${fileName}`;
@@ -55,7 +52,6 @@ export const uploadImage = async (file) => {
     return { url: null, error };
   }
   
-  // Get public URL
   const { data: { publicUrl } } = supabase.storage
     .from('testimonial-images')
     .getPublicUrl(filePath);
@@ -63,7 +59,6 @@ export const uploadImage = async (file) => {
   return { url: publicUrl, error: null };
 };
 
-// Add a new testimonial (pending approval)
 export const addTestimonial = async (testimonial) => {
   if (!supabase) return { data: null, error: 'Supabase not configured' };
   
@@ -75,7 +70,7 @@ export const addTestimonial = async (testimonial) => {
         mentions: testimonial.mentions,
         review: testimonial.review,
         img_path: testimonial.imgPath,
-        is_approved: false, // Requires manual approval
+        is_approved: false,
         is_highlighted: false,
       }
     ])
@@ -90,7 +85,7 @@ export const addTestimonial = async (testimonial) => {
           mentions: testimonial.mentions,
           review: testimonial.review,
           img_path: testimonial.imgPath,
-          is_approved: false, // Requires manual approval
+          is_approved: false,
         }
       ])
       .select();
@@ -99,7 +94,7 @@ export const addTestimonial = async (testimonial) => {
   
   return { data, error };
 };
-// Fetch all projects (only visible ones)
+
 export const fetchProjects = async () => {
   if (!supabase) return { data: null, error: 'Supabase not configured' };
   
@@ -112,7 +107,6 @@ export const fetchProjects = async () => {
   return { data, error };
 };
 
-// Fetch projects by type (web or ai) - only visible ones
 export const fetchProjectsByType = async (type) => {
   if (!supabase) return { data: null, error: 'Supabase not configured' };
   
@@ -126,7 +120,6 @@ export const fetchProjectsByType = async (type) => {
   return { data, error };
 };
 
-// Add a new project
 export const addProject = async (projectData) => {
   if (!supabase) return { data: null, error: 'Supabase not configured' };
   
@@ -138,12 +131,10 @@ export const addProject = async (projectData) => {
   return { data, error };
 };
 
-// Upload project image from URL to Supabase Storage
 export const uploadProjectImage = async (imageUrl, projectTitle) => {
   if (!supabase) return { url: null, error: 'Supabase not configured' };
   
   try {
-    // Fetch the image from URL
     const response = await fetch(imageUrl);
     if (!response.ok) throw new Error('Failed to fetch image');
     
@@ -152,7 +143,6 @@ export const uploadProjectImage = async (imageUrl, projectTitle) => {
     const fileName = `${projectTitle.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}.${fileExt}`;
     const filePath = `projects/${fileName}`;
     
-    // Upload to storage
     const { error } = await supabase.storage
       .from('project-images')
       .upload(filePath, blob, {
@@ -165,7 +155,6 @@ export const uploadProjectImage = async (imageUrl, projectTitle) => {
       return { url: null, error };
     }
     
-    // Get public URL
     const { data: { publicUrl } } = supabase.storage
       .from('project-images')
       .getPublicUrl(filePath);

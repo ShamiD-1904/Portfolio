@@ -1,13 +1,11 @@
 import emailjs from '@emailjs/browser';
 
-// Initialize EmailJS
 emailjs.init(import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
 
 export const sendEmail = async (formData) => {
   try {
-    // 1. Email to YOUR inbox
     const adminTemplateParams = {
-      to_email: 'shamidwebdev@gmail.com', // Your email
+      to_email: 'shamidwebdev@gmail.com',
       from_email: formData.email,
       from_name: formData.name,
       subject: formData.subject || 'New Contact Form Submission',
@@ -21,9 +19,8 @@ export const sendEmail = async (formData) => {
       adminTemplateParams
     );
 
-    // 2. Auto-reply email to SENDER
     const autoReplyParams = {
-      to_email: formData.email, // Sender's email
+      to_email: formData.email,
       from_name: formData.name,
       subject: formData.subject || 'New Contact Form Submission',
       message: formData.message,

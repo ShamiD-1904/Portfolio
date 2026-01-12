@@ -3,7 +3,6 @@ import { useIntersectionObserver } from "../hooks";
 import { sendEmail } from "../lib/emailService";
 import { Turnstile } from "@marsidev/react-turnstile";
 
-// Lazy load the 3D Canvas component
 const ContactCanvas = lazy(() => import("../components/ContactCanvas"));
 
 const Contact = () => {
@@ -14,7 +13,6 @@ const Contact = () => {
   const [error, setError] = useState("");
   const [turnstileToken, setTurnstileToken] = useState(null);
   
-  // Use custom intersection observer hook
   const { ref: sectionRef, isVisible } = useIntersectionObserver({ threshold: 0.1 });
   
   const [formData, setFormData] = useState({
@@ -38,14 +36,12 @@ const Contact = () => {
     setError("");
     setSuccess(false);
 
-    // Basic validation
     if (!formData.name || !formData.email || !formData.message) {
       setError("Please fill in all required fields.");
       setLoading(false);
       return;
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError("Please enter a valid email address.");
@@ -53,7 +49,6 @@ const Contact = () => {
       return;
     }
 
-    // Turnstile CAPTCHA validation
     if (!turnstileToken) {
       setError("Please complete the security verification.");
       setLoading(false);
@@ -67,13 +62,10 @@ const Contact = () => {
         setSuccess(true);
         setFormData({ name: "", email: "", subject: "", message: "" });
         setTurnstileToken(null);
-        // Reset Turnstile for next submission
         turnstileRef.current?.reset();
-        // Auto-hide success message after 5 seconds
         setTimeout(() => setSuccess(false), 5000);
       } else {
         setError(result.error || "Failed to send message. Please try again.");
-        // Reset Turnstile on error to allow retry
         turnstileRef.current?.reset();
         setTurnstileToken(null);
       }

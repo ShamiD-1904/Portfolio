@@ -14,10 +14,8 @@ const TestimonialModal = ({ isOpen, onClose, onSubmit }) => {
   const fileInputRef = useRef(null);
   const modalRef = useRef(null);
 
-  // Use custom scroll lock hook
   useScrollLock(isOpen);
 
-  // Handle scroll on overlay to scroll modal content
   const handleOverlayWheel = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -34,10 +32,8 @@ const TestimonialModal = ({ isOpen, onClose, onSubmit }) => {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Store the actual file for upload
       setFormData((prev) => ({ ...prev, imageFile: file }));
       
-      // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewImage(reader.result);
@@ -52,7 +48,6 @@ const TestimonialModal = ({ isOpen, onClose, onSubmit }) => {
 
     setIsSubmitting(true);
     
-    // Upload image if provided
     let imgPath = '/images/default-avatar.svg';
     if (formData.imageFile) {
       const { url, error } = await uploadImage(formData.imageFile);
@@ -71,7 +66,6 @@ const TestimonialModal = ({ isOpen, onClose, onSubmit }) => {
     await onSubmit(newTestimonial);
     setIsSubmitting(false);
     
-    // Reset form
     setFormData({ name: '', mentions: '', review: '', imageFile: null });
     setPreviewImage(null);
     onClose();

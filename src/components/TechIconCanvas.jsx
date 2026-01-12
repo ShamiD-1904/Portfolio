@@ -2,7 +2,6 @@ import { memo, Suspense, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, useGLTF, OrbitControls } from '@react-three/drei';
 
-// Single 3D model component with controlled animation
 const TechModel = memo(({ model, isVisible }) => {
   const { scene } = useGLTF(model.modelPath);
   const clonedScene = useMemo(() => scene.clone(), [scene]);
@@ -26,7 +25,6 @@ const TechModel = memo(({ model, isVisible }) => {
   );
 });
 
-// Component to invalidate frame when visible
 const FrameInvalidator = ({ isVisible }) => {
   useFrame(({ invalidate }) => {
     if (isVisible) {
@@ -36,7 +34,6 @@ const FrameInvalidator = ({ isVisible }) => {
   return null;
 };
 
-// Lightweight Canvas wrapper for each tech card
 const TechIconCanvas = memo(({ model, isVisible }) => (
   <Canvas
     frameloop="demand"

@@ -12,11 +12,9 @@ const SpeechBubble = memo(({
   const [showBubble, setShowBubble] = useState(false);
 
   useEffect(() => {
-    // Show bubble after delay
     const showTimer = setTimeout(() => {
       setShowBubble(true);
       
-      // Hide bubble after duration (if duration is provided)
       if (duration) {
         setTimeout(() => setShowBubble(false), duration);
       }

@@ -1,4 +1,4 @@
-import { useRef, useState, useMemo, useEffect } from "react";
+import { useRef, useState, useMemo, useEffect, useCallback } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -8,29 +8,68 @@ import { fetchProjects, supabase } from "../lib/supabase";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Category filter options
-const CATEGORIES = [
-  { id: "all", label: "All Projects", icon: "" },
-  { id: "web", label: "Web Development", icon: "" },
-  { id: "ai", label: "AI / ML", icon: "" },
-];
+const CATEGORIES = Object.freeze([
+  { id: "all", label: "All Projects" },
+  { id: "web", label: "Web Development" },
+  { id: "ai", label: "AI / ML" },
+]);
+
+const INITIAL_DISPLAY_COUNT = 5;
 
 const ShowcaseSection = () => {
   const sectionRef = useRef(null);
   const gridRef = useRef(null);
+  const rafRef = useRef(null);
+  
   const [selectedProject, setSelectedProject] = useState(null);
   const [showAll, setShowAll] = useState(false);
   const [activeCategory, setActiveCategory] = useState("all");
   const [projects, setProjects] = useState(fallbackProjectsData);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const INITIAL_DISPLAY_COUNT = 5;
 
-  // Fetch projects from Supabase on mount
+  const handleMouseMove = useCallback((e) => {
+    const card = e.currentTarget;
+    
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    
+    rafRef.current = requestAnimationFrame(() => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = (y - centerY) / 25;
+      const rotateY = (centerX - x) / 25;
+      const glowX = 50 + rotateY * 4;
+      const glowY = 50 + rotateX * 4;
+      
+      card.style.setProperty('--rotateX', `${rotateX}deg`);
+      card.style.setProperty('--rotateY', `${rotateY}deg`);
+      card.style.setProperty('--glowX', `${glowX}%`);
+      card.style.setProperty('--glowY', `${glowY}%`);
+    });
+  }, []);
+
+  const handleMouseLeave = useCallback((e) => {
+    const card = e.currentTarget;
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    
+    card.style.setProperty('--rotateX', '0deg');
+    card.style.setProperty('--rotateY', '0deg');
+    card.style.setProperty('--glowX', '50%');
+    card.style.setProperty('--glowY', '50%');
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
   useEffect(() => {
     const loadProjects = async () => {
       if (!supabase) {
-        // Supabase not configured, use fallback
         setProjects(fallbackProjectsData);
         setLoading(false);
         return;
@@ -45,7 +84,6 @@ const ShowcaseSection = () => {
           setProjects(fallbackProjectsData);
           setError('Using local data');
         } else if (data && data.length > 0) {
-          // Transform Supabase data to match component schema
           const transformedData = data.map(proj => ({
             id: proj.id,
             title: proj.title,
@@ -63,7 +101,6 @@ const ShowcaseSection = () => {
           }));
           setProjects(transformedData);
         } else {
-          // No data from Supabase, use fallback
           setProjects(fallbackProjectsData);
         }
       } catch (err) {
@@ -78,7 +115,6 @@ const ShowcaseSection = () => {
     loadProjects();
   }, []);
 
-  // Filter projects based on active category, with featured first
   const filteredProjects = useMemo(() => {
     let filtered;
     if (activeCategory === "all") {
@@ -87,7 +123,6 @@ const ShowcaseSection = () => {
       filtered = projects.filter((project) => project.type === activeCategory);
     }
     
-    // Sort featured projects first
     return filtered.sort((a, b) => {
       if (a.isFeatured === b.isFeatured) return 0;
       return a.isFeatured ? -1 : 1;
@@ -97,18 +132,17 @@ const ShowcaseSection = () => {
   const visibleProjects = showAll ? filteredProjects : filteredProjects.slice(0, INITIAL_DISPLAY_COUNT);
   const hasMoreProjects = filteredProjects.length > INITIAL_DISPLAY_COUNT;
 
-  // Handle category change with animation
   const handleCategoryChange = (categoryId) => {
     if (categoryId === activeCategory) return;
     
-    // Animate out current cards
-    const cards = gridRef.current?.querySelectorAll('.project-card');
+    const cards = gridRef.current?.querySelectorAll('.project-bento-card');
     if (cards && cards.length > 0) {
       gsap.to(cards, {
         opacity: 0,
-        y: 20,
-        duration: 0.2,
-        stagger: 0.03,
+        y: 30,
+        scale: 0.95,
+        duration: 0.25,
+        stagger: 0.04,
         onComplete: () => {
           setActiveCategory(categoryId);
           setShowAll(false);
@@ -127,42 +161,37 @@ const ShowcaseSection = () => {
       { opacity: 1, duration: 1.5 }
     );
 
-    // Animate project cards on category change or initial load
-    const cards = gridRef.current?.querySelectorAll('.project-card');
+    const cards = gridRef.current?.querySelectorAll('.project-bento-card');
     if (cards) {
       gsap.fromTo(
         cards,
-        { y: 30, opacity: 0 },
+        { y: 50, opacity: 0, scale: 0.95 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.5,
-          stagger: 0.08,
-          ease: "power2.out",
+          scale: 1,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: "power3.out",
         }
       );
     }
   }, [activeCategory, showAll]);
 
-  const openProjectModal = (project) => {
+  const openProjectModal = useCallback((project) => {
     setSelectedProject(project);
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
-  };
+  }, []);
 
-  const closeProjectModal = () => {
+  const closeProjectModal = useCallback(() => {
     setSelectedProject(null);
     document.documentElement.style.overflow = '';
     document.body.style.overflow = '';
-  };
+  }, []);
 
-  const handleShowMore = () => {
-    setShowAll(true);
-  };
-
-  const handleShowLess = () => {
-    setShowAll(false);
-  };
+  const handleShowMore = useCallback(() => setShowAll(true), []);
+  const handleShowLess = useCallback(() => setShowAll(false), []);
 
   return (
     <section ref={sectionRef} id="work" className="showcase-section-modern">
@@ -251,52 +280,76 @@ const ShowcaseSection = () => {
         {/* Projects Grid (only show if not loading) */}
         {!loading && (
           <>
-            {/* Unified Project Grid */}
-            <div className={`project-grid projects-${visibleProjects.length}`} ref={gridRef}>
+            {/* Modern Bento Grid with Glassmorphism */}
+            <div className={`project-bento-grid projects-${visibleProjects.length}`} ref={gridRef}>
               {visibleProjects.map((project, index) => (
-                <div
+                <article
                   key={project.id}
-                  className={`project-card ${project.isFeatured ? 'project-card-featured' : ''}`}
+                  className={`project-bento-card ${project.isFeatured ? 'bento-featured' : ''}`}
                   onClick={() => openProjectModal(project)}
+                  onMouseMove={handleMouseMove}
+                  onMouseLeave={handleMouseLeave}
                 >
+                  {/* Featured Badge */}
                   {project.isFeatured && (
-                    <div className="project-featured-badge">
-                      <span className="badge-dot"></span>
+                    <div className="bento-featured-badge">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                      </svg>
                       <span>Featured</span>
                     </div>
                   )}
-                  <div className="card-image-wrapper">
+                  
+                  {/* Glow Effect - CSS driven */}
+                  <div className="bento-glow" aria-hidden="true" />
+                  
+                  {/* Image Section with Overlay */}
+                  <div className="bento-image-container">
                     <img 
                       src={project.image} 
-                      alt={project.title}
-                      width={400}
-                      height={300}
+                      alt=""
+                      width={600}
+                      height={400}
                       loading={index < 2 ? "eager" : "lazy"}
                       decoding="async"
+                      className="bento-image"
                     />
-                    <div className="card-overlay">
-                      <div className="card-tags">
-                        {project.tags.slice(0, 3).map((tag, i) => (
-                          <span key={i} className="card-tag">{tag}</span>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="card-view-btn">
-                      <span>View Details</span>
-                      <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-                        <path d="M4 10H16M16 10L10 4M16 10L10 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
+                    <div className="bento-image-overlay" aria-hidden="true" />
+                    
+                    {/* Floating Tech Stack */}
+                    <div className="bento-tech-stack">
+                      {project.tags.slice(0, 4).map((tag) => (
+                        <span key={tag} className="tech-pill">
+                          {tag}
+                        </span>
+                      ))}
                     </div>
                   </div>
-                  <div className="card-content">
-                    <div className="card-meta">
-                      <span className="card-category">{project.category}</span>
-                      <span className="card-year">{project.year}</span>
+                  
+                  {/* Content Section */}
+                  <div className="bento-content">
+                    <div className="bento-meta">
+                      <span className="bento-category">
+                        <span className="category-dot" aria-hidden="true" />
+                        {project.category}
+                      </span>
+                      <span className="bento-year">{project.year}</span>
                     </div>
-                    <h3 className="card-title">{project.title}</h3>
-                    <p className="card-description">{project.shortDescription}</p>
+                    
+                    <h3 className="bento-title">{project.title}</h3>
+                    <p className="bento-description">{project.shortDescription}</p>
+                    
+                    {/* Interactive CTA */}
+                    <div className="bento-cta">
+                      <span className="cta-text">Explore Project</span>
+                      <span className="cta-icon" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                          <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </span>
+                    </div>
                   </div>
-                </div>
+                </article>
               ))}
             </div>
 

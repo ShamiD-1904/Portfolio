@@ -4,9 +4,6 @@ import { navLinks } from "../constants";
 import { socialLinks } from "../constants";
 import { useIsMobile } from "../hooks";
 
-
-
-// Tech stack used to build the portfolio
 const techStack = [
   { name: "React", url: "https://react.dev" },
   { name: "Three.js", url: "https://threejs.org" },
@@ -23,7 +20,6 @@ const isMobile = useIsMobile();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Animate footer elements on scroll into view
       gsap.from(".footer-content > *", {
         y: 30,
         opacity: 0,
@@ -37,7 +33,6 @@ const isMobile = useIsMobile();
         },
       });
 
-      // Animate the gradient line
       gsap.from(".footer-gradient-line", {
         scaleX: 0,
         duration: 1.2,

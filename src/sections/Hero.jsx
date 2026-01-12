@@ -1,18 +1,13 @@
-import { useRef, lazy, Suspense } from "react"; // Added lazy, Suspense
-import { words } from "../constants";
+import { useRef, lazy, Suspense } from "react";
+import { words } from "../constants";;
 import Button from "../components/Button";
-// REMOVED: import HeroExperience from "../components/HeroModels/HeroExperience";
 import useHeroAnimations from "../animations/useHeroAnimations";
 import useGlitchEffect from "../animations/useGlitchEffect";
 import { useIsMobile } from "../hooks";
 
-// --- STRICT FIX: Dynamic Import ---
-// This splits the heavy 3D component into a separate chunk.
-// It will NOT be downloaded until this line is executed in the render.
 const HeroExperience = lazy(() => import("../components/HeroModels/HeroExperience"));
 
 const Hero = () => {
-  // Ensure your hook defaults to TRUE (mobile) to be safe, or handles hydration well.
   const isMobile = useIsMobile(); 
   
   const slideRef = useRef();

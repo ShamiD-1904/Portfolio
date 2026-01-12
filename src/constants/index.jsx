@@ -223,9 +223,6 @@ const expCards = [
   },
 ];
 
-
-
-// Projects data for ShowcaseSection
 const projectsData = [
   {
     id: 1,

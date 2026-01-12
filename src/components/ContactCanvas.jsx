@@ -2,7 +2,6 @@ import { memo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 
-// Placeholder 3D component - replace with actual model later
 const ContactModel = memo(() => {
   return (
     <mesh>

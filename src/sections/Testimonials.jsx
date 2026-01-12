@@ -8,33 +8,26 @@ import { fetchTestimonials, addTestimonial, supabase } from '../lib/supabase';
 const INITIAL_VISIBLE_COUNT = 6;
 const SHOW_MORE_STEP = 4;
 
-// --- STRICT FIX: Image Optimization Logic ---
 const getOptimizedImageUrl = (imgPath) => {
-  if (!imgPath) return null; // Or return a default placeholder path like '/images/user-placeholder.webp'
+  if (!imgPath) return null;
   
-  // 1. Handle Full URLs (The logic bug is fixed here)
   if (imgPath.startsWith('http')) {
-    // If it is a Supabase URL, we FORCE the transformation params
     if (imgPath.includes('supabase.co')) {
-      // If it already has params (?), return as is to avoid breaking it
       if (imgPath.includes('?')) return imgPath;
       
-      // Append the transformation query string manually
       return `${imgPath}?width=100&height=100&resize=cover&format=webp&quality=80`;
     }
-    // If it's an external URL (e.g. Google Auth avatar), return as is
     return imgPath;
   }
   
-  // 2. Handle Relative Paths (e.g. "avatars/filename.jpg")
   if (supabase) {
     const { data } = supabase.storage
       .from('testimonial-images')
       .getPublicUrl(imgPath, {
         transform: {
-          width: 100,   // Resize to avatar size
-          height: 100,  // Resize to avatar size
-          resize: 'cover', // Smart crop
+          width: 100,
+          height: 100,
+          resize: 'cover',
           format: 'webp',
           quality: 80
         }
@@ -51,7 +44,6 @@ const Testimonials = () => {
   const [submitStatus, setSubmitStatus] = useState(null);
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
 
-  // Load testimonials from Supabase on mount
   useEffect(() => {
     const loadTestimonials = async () => {
       if (supabase) {
@@ -59,15 +51,13 @@ const Testimonials = () => {
         
         if (error) {
           console.error('Error fetching testimonials:', error);
-          setTestimonials([]); // Use empty array on error
+          setTestimonials([]);
         } else if (data && data.length > 0) {
-          // Transform Supabase data
           const formattedData = data.map(item => ({
             id: item.id,
             name: item.name,
             mentions: item.mentions || '',
             review: item.review,
-            // Apply the STRICT optimization fix here
             imgPath: getOptimizedImageUrl(item.img_path), 
             isHighlighted: !!item.is_highlighted,
             createdAt: item.created_at,
@@ -85,11 +75,6 @@ const Testimonials = () => {
     loadTestimonials();
   }, []);
 
-  // --- STRICT FIX: UX Improvement ---
-  // I removed the useEffect that reset visibleCount on [testimonials.length].
-  // This prevents the list from snapping back to 6 items if data updates.
-
-  // Handle new testimonial submission
   const handleAddTestimonial = async (newTestimonial) => {
     if (supabase) {
       const { error } = await addTestimonial(newTestimonial);
